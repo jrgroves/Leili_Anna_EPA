@@ -11,26 +11,56 @@ library(readxl)
 
 core<-read.csv("./Data/paper1_data.csv")
 
-cendat<-read.csv("./Data/nhgis0012_ts_nominal_county.csv", as.is=TRUE)
+cendat<-read.csv("./Data/nhgis0013_ts_nominal_county.csv", as.is=TRUE)
+  cendat<-cendat %>%
+    rename_with( ~gsub("125", "2010", .x, fixed=TRUE)) %>%
+    select(!ends_with("M"),
+           !ends_with("195"))
 
-temp80<-cendat %>%
-  select(STATE, STATEFP, COUNTY, COUNTYFP, ends_with(c("1980"))) %>%
+for(i in seq(1980,2010,10)){
+  
+temp<-cendat %>%
+  select(STATE, STATEFP, COUNTY, COUNTYFP, ends_with(as.character(i))) %>%
   filter(!is.na(COUNTYFP)) %>%
+  rename_with( ~ gsub(as.character(i),"",.x, fixed=TRUE)) %>%
   mutate(st_code = str_pad(as.character(STATEFP), 3, pad="0", side="left"),
-         cn_code = str_pad(as.character(COUNTYFP), 3, pad="0",  side="left"))
+         cn_code = str_pad(as.character(COUNTYFP), 3, pad="0",  side="left"),
+         pop = A00AA,
+         perwht = B18AA/A00AA,
+         perblk = B18AB/A00AA,
+         peroth = ifelse(i <= 1999 , (B18AC+B18AD)/A00AA, (B18AC+B18AD+B18AE)/A00AA),
+         peru18 = (B57AA+B57AB+B57AC+B57AD)/A00AA,
+         pero65 = (B57AP+B57AQ+B57AR)/A00AA,
+         perocc = B37AA/A00AA,
+         perrnt = B37AB/A00AA,
+         perurb = A57AA/A00AA,
+         perrrl = A57AD/A00AA,
+         pernhs = B69AA/A00AA,
+         perhsd = B69AB/A00AA,
+         percld = B69AC/A00AA,
+         per25k = (B70AA+B70AB+B70AC+B70AD)/A00AA,
+         per50k = (B70AE+B70AF+B70AG+B70AH)/A00AA,
+         per50p = (B70AI+B70AJ)/A00AA,
+         minc   = (B79AA),
+         year = as.numeric(i)) %>%
+  select(st_code, cn_code, year, pop, starts_with("per"), minc)%>%
+  mutate(join = paste0(st_code, cn_code, year))%>%
+  filter(!is.na(pop))
+
+  ifelse(i==1980, cendat2<-temp, cendat2<-rbind(cendat2, temp))
+}  
   
 
-c<-core %>%
+core2<-core %>%
   mutate(Start_YR=format(as.Date(core$final_date), "%Y"),
-         Cen_YR = round(as.numeric(Start_YR) / 10) * 10) %>%
+         year = round(as.numeric(Start_YR) / 10) * 10) %>%
   select(site_id, year_x, COUNTY, STATE, LATITUDE, LONGITUDE, final_date,
-         Start_YR, Cen_YR)
-
+         Start_YR, year)
 
 fips<-read_excel("~/Data/Census FIPS Codes.xlsx")
 
 #Correct County Errors#####
-cendat<-c %>%
+core2<-core2 %>%
   mutate(Name = gsub("(?<=\\b)([a-z])", "\\U\\1", tolower(COUNTY), perl=TRUE),
          Name = gsub(" Boroug", "", Name),
          Name = gsub(" Parish", "", Name),
@@ -79,12 +109,23 @@ cendat<-c %>%
 
 #Get FIPS Codes####
 
-cendat<-merge(cendat, fips, by=c("Name", "State"), all.x=T)
+core2<-merge(core2, fips, by=c("Name", "State"), all.x=T)
 
-temp<-cendat %>%
-  select(Cen_YR, FIPS) %>%
-  arrange(Cen_YR, FIPS) %>%
+core2<-core2 %>%
   distinct() %>%
-  mutate(state = substr(FIPS,1,2),
-         county = substr(FIPS,3,5))
+  mutate(st_code = str_pad(substr(FIPS,1,2), 3, pad="0", side="left"),
+         cn_code = str_pad(substr(FIPS,3,5), 3, pad="0", side="left"),
+         join = as.character(paste0(st_code,cn_code,year)),
+         join = replace(join, join == "0022012010", "0021302010"),
+         join = replace(join, join == "0120861980", "0122051980"),
+         join = replace(join, join == "0120861990", "0122051990"))
+
+core2<-merge(core2, cendat2, by="join", all.x=TRUE)
+
+core2 <- core2 %>%
+  filter(!is.na(pop)) %>%
+  select(site_id, Start_YR, pop, starts_with("per"), minc)
+
+save(core2, file="./Data/core2.RData")
+
 

@@ -6,50 +6,86 @@ library(survival)
 library(tidyverse)
 library(coxme)
 library(survminer)
+library(stargazer)
 
 core<-read.csv("./Data/paper1_data.csv")
+load(file="./Data/core2.RData")
+
+core<-core %>%
+  mutate(unemp = f_maleunem + f_femunem) %>%
+  select(!starts_with("f_")) %>%
+  mutate(CAG = case_when(CAG == 1 ~ 1,
+                         CAG == "CAG" ~ 1,
+                         CAG == 0 ~ 0,
+                         TRUE ~ 0)) %>%
+  mutate(party = case_when(president == "reagan1" ~ 0,
+                           president == "reagan1" ~ 0,
+                           president == "bush_father" ~ 0,
+                           president == "bush_son1" ~ 0,
+                           president == "bush_son2" ~ 0,
+                           TRUE ~ 1))
+
+
+core<-merge(core, core2, by="site_id")
 
 c<-core %>%
   mutate(Start_YR=format(as.Date(core$final_date), "%Y"),
          REGION = factor(REGION),
          FEDERAL = factor(FEDERAL),
-         CAG = factor(CAG),
          duration_w = duration/7,
-         f_income = log(income),
-         q_income = case_when(income < 18636  ~"first",
-                              income >18636 & income <29216 ~"second",
-                              income >29216 & income <37384 ~"thrid",
-                              income > 37384 ~ "fourth",
-                              TRUE ~ "other"),
-         q_vote = case_when(vote <= 50.90 ~ "vote_f",
-                            vote >50.90 & vote <=54.80 ~ "vote_s",
-                            vote > 54.80 & vote<=58.10 ~ "vote_t",
-                            vote >58.10 ~ "vote_fth",
+         q_vote = case_when(vote <= 50.90 ~ "vote_1",
+                            vote > 50.90 & vote <= 54.80 ~ "vote_2",
+                            vote > 54.80 & vote <= 58.10 ~ "vote_3",
+                            vote > 58.10 ~ "vote_4",
                             TRUE ~ "other2"),
+         q_vote = factor(q_vote, levels = c("vote_1","vote_2","vote_3","vote_4")),
          q_sites = case_when(SITE_SCORE <= 37.93 ~ "v_low_haz",
                              SITE_SCORE >37.93 & SITE_SCORE <=41.00 ~ "low_haz",
                              SITE_SCORE > 41.00 & SITE_SCORE <= 50.00 ~ "hg_haz",
                              SITE_SCORE > 50.00 ~ "v_hg_haz",
-                             TRUE ~ "other3")) %>%
-  select(duration, event, Start_YR, REGION, FEDERAL, CAG, starts_with("f_"),
-         f_income, q_income, lognpv, q_vote, q_sites)
+                             TRUE ~ "other3"),
+         q_sites = factor(q_sites, levels=c("v_low_haz","low_haz","hg_haz", "v_hg_haz")),
+         lnminc = log(minc),
+         pop = pop/1000,
+         vote = vote/100) %>%
+  select(duration, event, Start_YR, REGION, FEDERAL, CAG, starts_with("per"), pop, minc, party,
+         unemp, vote, lnminc, lognpv, q_vote, q_sites, vote)
+
+stargazer(c, type="html", out="./Analysis/Output/sumstat.html")
 
 
-fit <- survfit(Surv(duration, event) ~ factor(q_income), data = c)
-ggsurvplot(fit, 
-           data=c, 
-           conf.int = FALSE,
-           conf.int.style = "step",
-           break.time.by = 2,
-           surv.median.line = "hv",
-           title = "",
-           xlab = "")
+#fit <- survfit(Surv(duration, event) ~ factor(q_income), data = c)
+#ggsurvplot(fit, 
+#           data=c, 
+#           conf.int = FALSE,
+#           conf.int.style = "step",
+#           break.time.by = 2,
+#           surv.median.line = "hv",
+#            title = "",
+#           xlab = "")
 
 
-mod1<-coxph(Surv(duration,event)~f_black+f_unemployment+f_educated+f_urban+f_pop65+
-              f_owner+q_income+q_vote+lognpv+q_sites, data=c)
-mod2<-coxme(Surv(duration,event)~f_black+f_unemployment+f_educated+f_urban+f_pop65+
-              f_owner+q_income+q_vote+lognpv+(1|Start_YR), data=subset(c, q_sites=="low_haz"))
+mod1.a<-coxph(Surv(duration,event)~perblk+peroth+pero65+unemp+perhsd+percld+
+              perurb+lnminc+perocc, data=c)
+mod1.b<-coxme(Surv(duration,event)~perblk+peroth+pero65+unemp+perhsd+percld+
+              perurb+lnminc+perocc+(1|Start_YR), data=c)              
 
-summary(mod1)
-summary(mod2)
+mod2.a<-coxph(Surv(duration,event)~perblk+peroth+pero65+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites, data=c)
+mod2.b<-coxme(Surv(duration,event)~perblk+peroth+pero65+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites+(1|Start_YR), data=c)              
+
+
+mod3.a<-coxph(Surv(duration,event)~perblk+peroth+pero65+peru18+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites+
+                REGION+FEDERAL+party+per25k+per50k+pop, data=c)
+mod3.b<-coxme(Surv(duration,event)~perblk+peroth+pero65+peru18+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites+
+                REGION+FEDERAL+party+per25k+per50k+pop+(1|Start_YR), data=c)
+
+mod4.a<-coxph(Surv(duration,event)~perblk+peroth+pero65+peru18+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites+
+                REGION+FEDERAL+party+per25k+per50k+pop+vote*perblk, data=c)
+mod4.b<-coxme(Surv(duration,event)~perblk+peroth+pero65+peru18+unemp+perhsd+percld+
+                perurb+lnminc+perocc+q_vote+CAG+lognpv+q_sites+
+                REGION+FEDERAL+party+per25k+per50k+pop+vote*perblk+(1|Start_YR), data=c)

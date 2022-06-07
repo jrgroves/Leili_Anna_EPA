@@ -2,11 +2,28 @@
 
 rm(list=ls())
 
+options(scipen=999)
+
 library(survival)
 library(tidyverse)
 library(coxme)
 library(survminer)
 library(stargazer)
+
+
+coxme_table <- function (mod){
+  beta <- mod$coefficients
+  var<-names(beta)
+  e.beta <- exp(beta)
+  nvar <- length(beta)
+  nfrail <- nrow(mod$var) - nvar
+  se <- sqrt(diag(mod$var)[nfrail + 1:nvar])
+  z<- round(beta/se, 2)
+  p<- round(signif(1 - pchisq((beta/se)^2, 1), 2), 4)
+  table=data.frame(cbind(var,beta,e.beta,se,z,p))
+  return(table)
+}
+
 
 core<-read.csv("./Data/paper1_data.csv")
 load(file="./Data/Census.RData")
@@ -41,16 +58,67 @@ core1<-core %>%
                              SITE_SCORE > 50.00 ~ "v_hg_haz",
                              TRUE ~ "other3"),
          q_sites = factor(q_sites, levels=c("v_low_haz","low_haz","hg_haz", "v_hg_haz")),
-         vote = vote/100) %>%
-  filter(unemp < 0.30) %>%
+         vote = vote/100,
+         npv = npv/100000,
+         npv2 = asinh(npv),
+         year.end = as.numeric(substr(completion_date, 1, 4))) %>%
+  filter(unemp < 0.30,
+         unemp > 0.001,
+         duration > 0) %>%
   select(site_id, year, duration, event, Start_YR, REGION, FEDERAL, CAG, party, unemp, vote, 
-         lognpv, q_vote, q_sites, vote, SITE_SCORE, party.pres) %>%
+         npv2, npv, q_vote, q_sites, vote, SITE_SCORE, party.pres, year.end) %>%
   distinct()
 
 core2<-merge(core1, cendat2, by=c("site_id", "year"))
 save(core2, file="./Analysis/Output/core.RData")
 
-#Models
+
+###Figure One ####
+
+fig.data <- core2 %>%
+  group_by(year.end) %>%
+  tally(event) %>%
+  filter(year.end<2011)
+
+fig.one <- ggplot(fig.data, aes(x = year.end, y = n))+
+           geom_line()+
+           ylab("Number of Cleanups")+
+           xlab("Year")+
+           ggtitle("Figure One: Superfund Cleanups Completed by Year") +
+           labs(caption = "Source: EPA")+ 
+           scale_x_continuous(breaks = seq(1980,2010,2))+
+           theme_bw()
+
+fig.two <- ggplot(core2, aes(x=q_sites, y=duration))+
+  geom_boxplot()+
+  theme_bw()
+
+### Table One ####
+
+sum.stat<-core2 %>%
+  mutate(federal = case_when(FEDERAL == "F" ~ 1,
+                             FEDERAL == "G" ~ 0,
+                             TRUE ~ 0),
+         v_low_haz = case_when(q_sites == "v_low_haz" ~ 1,
+                               TRUE ~0),
+         low_haz = case_when(q_sites == "low_haz" ~ 1,
+                               TRUE ~0),
+         hg_haz = case_when(q_sites == "hg_haz" ~ 1,
+                               TRUE ~0),
+         v_hg_haz = case_when(q_sites == "v_hg_haz" ~ 1,
+                               TRUE ~0)) %>%
+  
+  select(event, duration, npv, npv2, SITE_SCORE, federal, CAG, pop, permin, pero65, unemp, pernhs, perhsd,
+         percld, minc,  lnminc2, vote, party, v_low_haz, low_haz, hg_haz, v_hg_haz)
+
+  sum.m<-signif(sapply(sum.stat, mean), 4)
+  sum.st<-signif(sapply(sum.stat, sd), 4)
+  sum.min<-signif(sapply(sum.stat, min), 4)
+  sum.max<-signif(sapply(sum.stat, max), 4)
+  
+  descrip.stat=data.frame(cbind(sum.m, sum.st, sum.min, sum.max))
+  
+  #Models
 
 mod1a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
                  perocc+perrnt, data=core2)
@@ -83,9 +151,26 @@ mod5b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+ln
                  perhsd*party+percld*party+perhsd*CAG+percld*CAG+(1|Start_YR), data=core2)
 
 mod6a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+q_sites*CAG
-                 ,
+                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+q_sites*CAG,
                data=core2)
 mod6b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
                  perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+q_sites*CAG+
                  (1|Start_YR), data=core2)
+
+mod1b.o<-coxme_table(mod1b)
+mod2b.o<-coxme_table(mod2b)
+mod3b.o<-coxme_table(mod3b)
+mod4b.o<-coxme_table(mod4b)
+mod5b.o<-coxme_table(mod5b)
+mod6b.o<-coxme_table(mod6b)
+
+#Code to join all coxme tables for output
+#put all data frames into list
+df_list <- list(mod1b.o, mod2b.o, mod3b.o, mod4b.o, mod5b.o, mod6b.o)
+
+#merge all data frames in list
+coxme.out <- df_list %>% reduce(full_join, by='var')
+  write.csv(coxme.out, file="./Analysis/Output/ME_Tables.csv")
+stargazer(mod1a, mod2a, mod3a, mod4a, mod5a, mod6a,
+          type="text",
+          out = "./Analysis/Output/PH_Table.txt")

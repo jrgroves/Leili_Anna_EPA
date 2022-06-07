@@ -61,13 +61,15 @@ for(i in seq(1980, 2010, 10)){
            per25k = (B70AA+B70AB+B70AC+B70AD)/pop,
            per50k = (B70AE+B70AF+B70AG+B70AH)/pop,
            per50p = (B70AI+B70AJ)/pop,
+           minc   = B79AA,
            lnminc   = log(B79AA),
            lnminc2 = asinh(B79AA)) %>%
-    select(site_id, year, pop, starts_with("per"), lnminc, lnminc2) %>%
-    filter(!is.na(pop))
+    select(site_id, year, pop, starts_with("per"), minc, lnminc, lnminc2) %>%
+    filter(!is.na(pop),
+           minc>0) 
   
     ifelse(i==1980, cendat2<-temp4, cendat2<-rbind(cendat2, temp4))
-    rm(temp1, temp2, temp3, temp4)
+    rm(temp1, temp2, temp3, temp4) 
 }
   
 cendat2$perwht[which(cendat2$perwht>1)]<-1.0  #fixed 5 rounding errors

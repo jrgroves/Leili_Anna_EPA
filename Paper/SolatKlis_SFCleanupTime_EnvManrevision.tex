@@ -1,0 +1,572 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{lmodern}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{csquotes, xpatch}
+\usepackage{lineno}
+
+\usepackage{longtable,booktabs} 
+\usepackage{setspace}
+
+\usepackage{tabto}
+\usepackage{multirow}
+
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[singlelinecheck=false]{caption}
+\usepackage{epstopdf}
+\usepackage{float}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{accents}
+
+
+
+%\usepackage[style=authoryear-ibid,backend=biber]{biblatex}
+\usepackage[style=authoryear-ibid, natbib, maxcitenames=3, giveninits, backend=biber, urldate=long]{biblatex}
+\addbibresource{SF_comm4.bib}
+
+\renewcommand*{\bibinitdelim}{}
+\renewcommand*{\bibinitperiod}{}
+\DeclareNameAlias{sortname}{last-first}
+\renewbibmacro{in:}{}
+\renewcommand*{\revsdnamepunct}{}
+
+%\DeclareFieldFormat{url}{Available at\addcolon\space\url{#1}}
+\DeclareFieldFormat{url}{\url{#1}}
+
+\renewbibmacro*{volume+number+eid}{%
+  \printfield{volume}%
+%  \setunit*{\adddot}% DELETED
+  \setunit*{}% NEW (optional); there's also \addnbthinspace
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {title}{#1\isdot}
+
+\renewcommand*{\bibpagespunct}{\addcolon\space}  
+\DeclareFieldFormat[article]{pages}{#1}
+
+\DeclareFieldFormat{urldate}{% Reformats urldate field to read "accessed", replacing "(visted on)"
+        (accessed %
+        \thefield{urlday}\addspace
+        \mkbibmonth{\thefield{urlmonth}}\addspace%
+        \thefield{urlyear}\isdot)}
+
+
+
+\newcommand{\e}{\mathrm{e}}		
+
+\newcommand{\twochoices}[2]{\left\{ \begin{array}{lcc}
+		\displaystyle #1 \\ \vspace{-10pt} \\
+		\displaystyle #2 \end{array} \right. } 
+
+\newcommand{\twovec}[2]{\left(\begin{array}{c} #1 \\ #2 \end{array}\right)}
+
+\newcommand{\twomatrix}[4]{\left(\begin{array}{cc} #1 & #2 \\ 
+		#3 & #4 \end{array}\right)}
+		
+		
+		%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%
+
+
+\title{\Large Superfund Cleanup Time and Community Characteristics: \\
+A Survival Analysis} 
+
+\author{\normalsize Leili Solatyavari\footnote{Email: solatleili@gmail.com} \\
+\normalsize Ingram Micro \\ 
+\\
+\normalsize Anna A. Klis\footnote{Corresponding author. Address: Zulauf Hall 510, DeKalb, IL 60115. Email: aklis@niu.edu.} \\
+\normalsize Department of Economics, Northern Illinois University \\
+}
+
+\date{ } 
+
+\begin{document}
+
+\maketitle
+
+\onehalfspacing
+
+\vspace{-20pt}
+\begin{abstract}
+This paper investigates the correlation of socioeconomic characteristics of communities close to Superfund sites with the duration of cleanup using spatial survival analysis. Census-tract-level data is used to achieve a more accurate representation of affected areas. Overall, we find no evidence of slower cleanup in areas with higher minority population; rather, the median income of households is correlated with longer cleanup time. Additionally, sites located in communities with higher levels of education and voter turnout experience faster cleanup.
+
+\noindent {\bf Keywords:} ArcGIS, hazardous waste, income, minority, Superfund, survival analysis, voter participation
+
+\end{abstract}
+
+\section*{Acknowledgments}
+
+{We gratefully acknowledge comments from seminar participants at Northern Illinois University, participants of the 2017 meetings of the Midwest Economics Association, Chris Timmins, Lala Ma, Jay Shimshack, Matthew McGinty, Richard ``Max'' Melstrom, Jeremy Groves, and prior anonymous reviewers.}
+
+
+
+%\section*{Transparency of Data}
+
+%Data sources are described in Section \ref{data} of the article and were constructed by Dr. Solatyavari at Northern Illinois University through available file downloads and extraction from a Superfund site's Record of Decision. %Replication materials will be made available at Huskie Commons at \underline{https://commons.lib.niu.edu/}.
+
+\newpage
+
+\linenumbers
+\section{Introduction}\label{intro}
+
+Commercial and industrial waste has created thousands of hazardous sites throughout the United States over the past century \parencite{EPA2011}. From the 1940s until 1995, the Hooker Electrochemical Company disposed 21,000 tons of toxic byproducts into the Love Canal in Niagara Falls, NY. Nearby homeowners found chemicals leaking onto their lands, and health studies warned of serious diseases and possible genetic problems. In 1978, about 950 families were evacuated from their homes, and 237 homes were bulldozed \parencite{Brown1979, NRDAR2016}. This tragedy directed governmental attention, like that of Congress and the Environmental Protection Agency (EPA), to toxic lands, leading to the creation of Superfund cleanup program in 1980 under the Comprehensive Environmental Response, Compensation, and Liability Act.  In 1981, the Love Canal was the first site listed in the history of Superfund, reaching ``construction complete'' in 2004 \parencite{USEPA2018}. Superfund is the name of the environmental program and also the trust fund established to address abandoned hazardous waste sites when no responsible party is identified. %The program also provides ``a clearly defined responsibility for the polluters'' which \textcite{perrings_2000} suggests as a model for global cleanup; thus, understanding the impact of community characteristics such as income, education, and minority status on the workings of Superfund cleanup can  inform development work and similar initiatives within and beyond the US. 
+
+The process of finding and negotiating with polluters often delays the actual start of cleanup construction, which can then vary in length depending on site pollution, chosen cleanup method, and administrative delay. This timeline concerns the public directly: in 2017 approximately 53 million people, or roughly 16\% of the US population at the time, lived within three miles of a Superfund site; of those, 15 million lived within one mile of a Superfund site, of which 44\% belong to a minority \parencite{EPA2017}. Much of the environmental justice literature considers how minority communities may bear a disproportionate burden of the risks associated with living near hazardous waste sites. \textcite{lavelle1992unequal} and \textcite{bullard2008dumping} argue that, in more than half of the ten EPA regions, the EPA chooses less desirable cleanup treatments and tends to face delays for contaminated lands in areas with a greater minority population, though \textcite{Gupta1996} find no impact of minority status on the cost-permanence trade-off of cleanup choices. 
+
+We perform a spatial analysis using census-tract-level data to investigate the socioeconomic characteristics and engagement of Superfund communities and the correlation with the duration of cleanup. This is also our main contribution: survival analysis estimates hazard ratios, allowing for more meaningful interpretation of variable effects on cleanup duration. Additionally, using census-tract-level data achieves a finer and more accurate representation of affected areas, as opposed to larger aggregates like zip codes. Overall, we find no evidence of slower cleanup of sites in areas with a high fraction of Black or Hispanic population. However, we do find that the median income of households is {\it negatively} correlated with the speed of site cleanup: sites in poorer neighborhoods are cleaned faster, provided they were listed in the first place. Sites with older and more engaged communities, as represented by voter participation and education, have a faster pace of cleanup. Moreover, site difficulty measures like Hazard Ranking Score and Net Present Value  are associated with a prolonged cleanup time, as is federal site ownership. We also present evidence that Community Advisory Groups are important, but that their formation is likely endogenous to cleanup duration.
+
+Section \ref{lit} describes the background of Superfund, the cleanup process, and environmental justice concerns. Section \ref{data} describes data used, while Section \ref{metrics} presents our estimation approach and results. Section \ref{conc} concludes. 
+ 
+\section{Background}\label{lit}
+
+%%%Superfund
+
+Under the Superfund program, sites with serious hazards are placed on the National Priority List (NPL). This step formalizes the Environmental Protection Agency's (EPA) commitment to permanently remove the contamination, finding responsible parties, and resolving fault and cleanup funding with them. When cleanup construction is finished, the EPA monitors NPL sites for some time after to assure that all threats have been addressed. The site is then deleted from the NPL. According to the Comprehensive Environmental Response, Compensation and Liability Information System Public Access Database, at the time of writing there were 1,666 sites ``listed on the NPL,'' of which 1,161 were sites classified as ``construction complete'' and 378 sites ``deleted from the NPL.'' Figure \ref{fig1} depicts the number of site cleanups completed since the beginning of Superfund until 2010.
+
+\begin{figure}[h] \centering
+	\includegraphics[width=0.75\textwidth]{figure1_new}
+	\caption{Superfund cleanups completed by year.} \label{fig1}
+\end{figure}
+
+%%%Cleanup time
+
+Cleanup time itself can vary: some communities wait a long time for cleanup completion, while other sites resolve more quickly. The length of time it takes for a site to complete the cleanup process is important to communities living nearby as they may be impacted by the contamination on the site, directly or indirectly, by the continued existance of the site. The variation in the observed cleanup duration can be divided into the two main time-frames for a Superfund site: enforcement time and actual cleanup time.
+
+Enforcement time includes the work of identifing the responsible parties and developing a plan for the actual cleanup process while cleanup time referres to the ''shovels in the ground'' stage when actual cleanup is occuring. Unfortunately we are unable to observe the distinct time-frames so our analysis is restricted to being a correlation analysis rather than a causation analysis. We do not; however, view this as a disadvantage given our objective of identifing which communities suffer higher costs from contamination and the fact that a longer overall duration, irrespective of time-frame, impose higher costs on the nearby residents and that only the finalization of the cleanup marks a turning point for the surrounding community.
+
+\begin{table}[t] 
+	%\renewcommand\thetable{3.1}
+	\centering	 \footnotesize
+	\caption{\small Summary Statistics for Superfund Sites and Population within 1 Mile of Site} \label{summstat}
+	\tabcolsep 9pt
+		\begin{tabular}{lrrrr}
+		\hline 
+			Variable (Observations: {$N = 1327$}) & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{S.D.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ \hline  
+		%ADR used & {0.36} & \multicolumn{1}{r}{0.48} &  {0} &  {1} \\
+			Completed cleanup &  {0.67} &  {0.469} &  {0} &  {1} \\
+			Duration of Cleanup (days) &  {5,340} &  {3,051} &  {221} &  {12,540} \\
+			NPV (in \$10,000) &  {1510} &  {6153} &  {122} &  {147,600} \\
+			Pollution (Hazard Ranking Score) &  {43.46} &  {8.74} &  {28.5} &  {84.91} \\
+			%Number of PRPs &  {40} &  {145} &  {0} &  {2,626} \\
+			{Federal}  &  {0.11} &  {0.31} &  {0} &  {1} \\
+			CAG   &  {0.03} &  {0.18} &  {0} &  {1} \\
+			%EJ program  &  {0.11} &  {0.28} &  {0.06} &  {0.15} \\
+			Population &  {596} &  {913.25} &  {0} &  {5736} \\
+			Black (fraction of population, in percentage points) &  {0.54} &  {1.57} &  {0} &  {0.96} \\
+			Hispanic &  {0.33} &  {1.29} &  {0} &  {0.85} \\
+			Population over 65 &  {0.41} &  {1.2} &  {0} &  {0.96} \\
+			Unemployed &  {0.13} &  {0.17} &  {0} &  {0.8} \\
+			Educated  &  {0.10} &  {0.06} &  {0} &  {0.2} \\
+			Urban &  {0.61} &  {0.38} &  {0} &  {0.72} \\
+			Income (in \$1) &  {25,010} &  {12,628} &  {5,000} &  {94,320} \\
+			Voter turnout  &  {0.54} &  {0.05} &  {0.40} &  {0.67} \\
+			Democratic Representative &  {0.5} &  {0.5} &  {0} &  {1} \\
+			\hline
+	\end{tabular}
+\end{table}
+
+
+\begin{figure}[t] \centering
+\includegraphics[width=0.75\textwidth]{histogram_combined.jpg}
+\caption{A combined histogram of process times for Superfund sites. The black columns show the distribution of cleanup times in 2-year bins for ``Completed'' sites. The light gray columns show the distribution of years (to February 2021) since listing date for sites listed on the NPL but which have not yet attained ``Completed'' status, including four sites that were ``Deleted from the NPL'' without having ever been ``Completed.''
+\label{hist1}}
+\end{figure}
+
+For the 1,396 sites under consideration in this paper, Table \ref{summstat} lists a minimum cleanup duration of 111 days and a maximal duration of over 31 years, with a mean cleanup duration of 5,389 days ($\sim$14.8 years). Figure two shows the distribution of duration to cleanup for sites based on the quartile classification of the site score, a measure of the severity of the pollution at a given site determined by the EPA with the average site having a score of about 43.14. We in the figure that except for the lowest hazard score quartile, the more pollution at the site, the longer the cleanup duration, as one would expect. Unfortunately with the data at hand, we can can not identify the cause of the lowest category having such a wide variation of cleanup durations, specifically if it is a result of longer enforcement or cleanup times; however, these are also the sites that should impose the smallest impact on the surrounding communities.  
+
+%%%%EJ Concerns
+
+Our concern is identifing the characteristics of the communiities located within one mile of a Superfund site that may impact the duration of time between the site being listed on the NPL and the completion of the cleanup process. Again, while we are unable to point to a causal relationship between any identified factor and the duration of the cleanup process, we are able to identify those factors that deserve further scrutiny. 
+
+The biggest potential source of impact on the duration of a site cleanup is the participation of the surrounding community in the process. The Superfund Amendments and Reauthorization Act (SARA) of 1986 ``encouraged greater citizen participation in how sites are cleaned up'' \parencite{OLEM}. The EPA informs communities at each stage of the process,  gathering input opinions about cleanup strategies. \textcite{Sigman2001} shows that community involvement in the form of voter turnout is indeed an important factor that affects the EPA's bureaucratic priorities in listing hazardous sites, while \textcite{Viscusi1999} demonstrates that regulators apply more effective cleanup actions in areas with more concerned and involved citizens. Communities have several incentives for involvement: addressing contaminated sites can mitigate serious health risks associated with pollution or prevent a decline in property values \parencite{kohlhase1991impact}. Table \ref{summstat} shows that the average voter participation rate within one mile of a Superfund site is about 55 percent and ranges from around 40 percent to as high as 67 percent.
+
+To create a more concrete opportunity for public engagement, congress also established Community Advisory Groups (CAG) as part of the SARA legislation. These CAGs seek active community representatives to help enhancing public interest and participation in the entire cleanup process. While CAGs may be suitable for some Superfund sites, they may not be applicable to all as \textcite{daley2004policy} finds that the presence of a CAG may impose an additional cost on the EPA and lengthen cleanup time. To measure the potential impact of CAG, we include an identifier variable if a given site has an associated CAG. For our data we see that only about 4 percent of the sites have an associated CAG and that most of these sites are in the top two quartiles of polluation hazard score. 
+
+Previous research also shows that community involvement in environmental programs can be driven by factors such education, income, and political power \parencite{daniels2012public, OEJ2017}; factors which in turn may be influenced by race and historical racial issues within the United States. In addition, the \textcite{united2003not} argues that disadvantaged communities may experience difficulty with EPA community involvement training and thus lack access to the technical data and other information necessary for environmental activism. Furthermore, newer enforcement period options such as the Alternative Dispute Resolution (ADR) program require communities to possess a certain level of education and organization in order to understand technical documents and procedures. Language and cultural differences, education and income disparities, and even a lack of trust between community members and regulatory agencies can lead to decreased engagement in community involvement programs, and thus decreased influence \parencite{EPA2011}.
+
+Education, in particular, contributes to higher participation in politics and environmental programs, offering citizens the skills required to effectively express their concerns to politicians and regulatory organizations \parencite{verba1995voice} and to understand how bureaucratic processes function \parencite{Howell1992, rosenstone1993mobilization}. Activism depends on citizen's beliefs about the benefits, costs, and impacts of collective action \parencite{finkel1989personal}, and so communities with lower educational attainment are less likely to participate. For example, Superfund cases are 1.9 times less likely to be resolved through ADR in communities with a higher percentage of less educated residents \parencite{Collins2008}. Table \ref{summstat} shows that an average of 11 percent of the population within census tracts located within one mile of the Superfund site have at least a college degree while another 44 percent have at least a high school diploma. While the average percentage with no high school diploma is only about 7 percent, it does range as high as 27 percent in some site areas. 
+
+Level of involvement may have less to do with individual characteristics themselves and more to do with larger socioeconomic conditions such as the impact of poverty on time evaluation \parencite{dunlap1978new, Sigman2001}: poorer individuals are more likely to spend time meeting basic economic needs, as opposed to taking active voice in environmental programs. This idea, along with the idea that invdividuals in poverty still suffer positive costs from sites, is shown by \textcite{nakada_2017} via theoretical model indicating low-income residents vote for higher environmental taxes because they live closer to polluted sites while if the environmental campaign requires a greater committment than a simple vote, affluent residents have more time and resources to contribute; on a national or global level this pattern is often described as the Environmental Kuznets Curve. Furthermore, the EPA may respond to interest groups in prioritizing its resources; high-income communities can lobby for more costly, comprehensive remedies \parencite{Sigman2001, Gamper-Rabindran2013, burda2014environmental}, while {Burda et al. (2013) suggest that sites in areas with a higher fraction of population over 65 are cleaned faster, since retirees have more free time to engage in environmental programs.} The areas nearby the sites in our study show an average median income of about \$30,000 ranging from as low as \$275.00 to as high as \$113,600. 
+
+High income individuals may also face a higher cost from nearby wastelands -- especially those proposed and listed as Superfund sites -- due to depressed property values \parencite{McClelland1990}. \textcite{ready2010landfills} shows that residential property values decrease by 12.9\% on average if a landfill is located nearby; this loss can extend three or more miles from a site and can lead to urban decay or ``reverse gentrification,'' where affluent whites move away, while poor and/or minority groups take advantage of affordable housing and move in. Fixing undesirable sites, however, leads to an improvement in housing prices \parencite{Haninger2017}. In the one-mile areas around the sties in our study, about one-quarter of the homes are owner-occupied.
+
+Others have found that capacity expansion of commercial hazardous waste facilities is negatively correlated with voter turnout \parencite{Hamilton1995} and that Superfund sites in pro-environmental counties (measured by higher voter turnout) are more likely receive targeted, cancer-risk-eliminating cleanup \parencite{hamilton1999calculating}. \textcite{Morello-Frosch2006} observe a higher level of cancer risk due to toxic releases in areas with higher levels of ethnicity segregation. If segregated communities lack political clout over decisions on waste facility locations and pollution removal, then this results in adverse health effects for everyone in an area. 
+
+The level of demographic data plays an important role in understanding population patterns close to these sites. Previous studies often matched Superfund locations with demographic attributes through zip codes; notably, \textcite{burda2014environmental} do so and find evidence of racial discrimination prior in NPL sites prior to 1994. Newer studies of health and movement responding to pollution (e.g. the earlier-mentioned \textcite{Morello-Frosch2006}, \textcite{Gamper-Rabindran2013}, and \textcite{Depro2015}) have used census tracts. Census tracts are small, relatively permanent statistical subdivisions of a county or equivalent entity that are updated by local participants prior to each decennial census as part of the Census Bureau's Participant Statistical Areas Program. Analysis based on census-tract-level data is expected to achieve a more accurate representation of affected areas due to increased granularity \parencite{ProximityOne2019} and a richer set of demographic data. %({As an example of granularity, the zip code of Northern Illinois University contains eight census tracts and overlaps with five others.})
+Additionally, census tracts provide more statistical uniformity between tracts, averaging a population of about 4,000, while the population of a single zip code can exceed 100,000. %Therefore, the analysis is expected to obtain more precise results using the more well-defined census tracts as geographic areas of interest rather than zip codes. 
+
+%As an example, let us consider the Lake Calumet Cluster Superfund site in Chicago, IL. %Figure \ref{calumet} shows the site's location and some key information from the EPA's ``Superfund Sites Where You Live'' interactive map.  
+%The top panel of Figure \ref{zip} shows zip code 60633, which contains the Lake Calumet Cluster, while the bottom panel shows a portion of Cook County's 2010 census tracts, with the Lake Calumet Cluster highlighted as a green dot in census tract 8388. We see that zip code 60633 is somewhat larger than census tract 8388 and, in this particular case, less centered on Superfund site.
+
+\textcite{Aydin2006} examine population changes in census tracts around Superfund sites in Harris County, TX. Using 2.5- and 5-mile radii and multiple census years, they find that site listing comes {\it before} increases in minority population, concluding -- in contrast to \textcite{burda2014environmental} -- that environmental racism was unlikely to be the cause of Superfund site listing. However, they do find that lower income levels and higher percentages of Blue Collar workers were present near the sites prior to their listing. Though their paper examines site placement and ours examines cleanup time, the results are complementary; using census-tract-level data highlights the importance of wealth in polluted areas. 
+
+\section{Data}\label{data}
+
+%In this section, we describe the data used in our investigation of community involvement's effect on the enforcement and cleanup process of Superfund sites. We use survival analysis to estimate factors that influence the time from the listing date on the National Priority List (NPL) to completion of cleanup for sites in the sample. 
+
+Our data derive from four sources on Superfund sites. Data on dates of Superfund lifetime events and site characteristics are collected from the Environmental Protection Agency (EPA). Information regarding latitude and longitude of Superfund sites are extracted from NASA's Socioeconomic Data and Applications Center, managed by Colombia University. Demographic data by census tracts, as well as Geographic Information System (GIS) boundary files, come from the National Historical Geographic Information System (NHGIS), provided by the Minnesota Population Center at the University of Minnesota. The NHGIS survey contains a very broad set of demographic variables from the 1980, 1990, 2000 and 2010 Decennial Censuses. Finally, voter turnout and Congressional Representative party are extracted from the US Census Bureau historical voting database. 
+
+The research sample consists of 1,666 Superfund sites across the United States, which are either currently on the National Priority List (NPL) or deleted from the NPL. Since the US was not completely covered in census tracts in 1980, several sites are dropped due to lack of data in that time, leading to 1,327 sites for use in cross-sectional analysis. We analyze the duration of the enforcement/cleanup process in relation to the demographic profile of communities living close to the sites. ArcGIS intersects the US boundary files with demographic information for each decade located within an area of one mile and one-half mile centered on each site specified by their latitude and longitude. Populations of interest within these one-mile and half-mile buffers can be calculated as $\Big[\frac{\text {area of buffer}}{\text {area of census tract}}\times \text {\footnotesize population of census tract}\Big]$. 
+
+The main trade-off between census-tract-level and zip-code-level data is census collection timing. ``Demographic data refer to the Decennial Census and other surveys of individuals and households administered by the Census Bureau'' \parencite{USCensus}. This paper relies on the full US population demographics captured in the main Decennial Census. 
+Since demographics can shift between census collection years, we avoid potential endogeneity between duration of cleanup and demographic changes by using the demographic variables at the time of site listing. For example, we use the 1980 census to capture the demographics for sites listed between 1980 to 1989, and similarly for other decades. In this way, factors that influence the cleanup process are pre-determined with respect to the cleanup duration. {\textcite{Depro2015} mention issues with census-tract data when investigating migration; the decennial data entries do not adequately capture demographic changes caused by those ``fleeing from'' and ``coming to the nuisance.'' Our study does not investigate the effect of polluted sites on demographic mobility, but rather the effect of demographics on the cleanup of polluted sites. We include a robustness check with centered listing dates to test for endogeneity.} %This is also why we use cross-sectional analysis instead of a panel approach.
+
+Demographic variables of interest include the fraction of population that are Black/Hispanic, fraction unemployed, fraction educated above high school, fraction living in urban areas, median household income, fraction of owner-occupied households, and fraction over 65 years.%In some of our specifications, the fraction minority variable is broken down into four segments and controlled as a categorical variable. The categorical variable shows that 54\% of sites have a ``true'' minority population of less than 25\% Black or Hispanic within one mile of a Superfund site, while 19\% of Superfund sites are located in areas with a high rate of minority population estimated between 76 and 100\%.  
+
+Since measures of direct public participation in Superfund site cleanup do not exist, we use voter turnout and the existence of a Community Advisory Group (CAG) 
+near the site as proxies for the level of public participation. The earlier mentioned level of education and median household income serve as controls. Voter turnouts for presidential elections 1980-2012 are matched based on the state where the Superfund is located and the closest presidential election date to the site's listing date. Unfortunately, we do not have detailed data on the formation timelines of CAGs, which are formed in response to site listing or duration, nor on the existence of any unofficial community organization efforts.
+
+We do include site-specific characteristics, including the total present value of site remediation cost. Cost information for each site is available in its Record of Decision (ROD), available on the EPA website. Each ROD summarizes the details of the planned cleanup implementation, breaking down the estimated total present value into capital costs, which represent the actual cleanup construction costs, as well operation/maintenance costs, which comprise the annual costs of the selected remedy's administration and up-keep. Each ROD also presents detailed information regarding which costs are discounted and the discount rate used. Much of the sample used a 7\% discount factor, in accordance with policy from the former Office of Solid Waste and Emergency Response (OSWER), now the Office of Land and Emergency Management.\footnote{The importance of discount factors is described in the 2000 ``Guide to Developing and Documenting Cost Estimates During the Feasibility Study'' from the EPA and US Army Corps of Engineers, and OSWER's 7\% default is mentioned throughout 1999's ``Guide to Preparing Superfund Proposed Plans, Records of Decision, and Other Remedy Selection Decision Documents.''} The present value is thus an estimate of the entire expected cost of the remediation. We reviewed site RODs and manually extracted the stated net present worth of cleanup cost of the site's chosen method for the sample {To keep NPVs consistent, we recalibrated any sites that did not use the 7\% discount factor.}
+
+The nature of site contamination can also dictate the length of cleaning time.\footnote{Contaminated media usually include debris, groundwater, sediment, surface water, or waste, and the type of contaminants are acids, metals, Volatile Organic Compounds and Polycyclic Aromatic Hydrocarbons substances. Generally, cleanup is easier if the contaminated media is waste or debris, while it is much harder for groundwater or soil.} \textcite{Gupta1996} find that the EPA prefers permanent cleanup techniques, but not at any cost. To account for the nature of the pollution, we use the Hazard Ranking Score (HRS) scaling from 0 to 100, calculated by the EPA to show the level of toxicity and cleanup difficulty in sites. Sites with a higher HRS possess higher levels of contaminants. Naturally, we expect that the more polluted a site, the longer cleanup construction will take. Apart from technical difficulties caused by contamination level, organizational behavior may further hinder the process of cleanup: \textcite{daley2004policy} find evidence that the EPA pays less attention to highly-contaminated sites and more to low-risk sites. Administrative convenience may decrease the likelihood of quick and full cleanup as the level of site difficulty increases; the organization is able to tackle a larger number of cleanup tasks if it prioritizes ``easy sites'' and shifts efforts away from ``difficult sites.'' 
+
+Site ownership might also contribute to cleanup time. Since cleanup time is defined as the length of time between listing and reaching ``construction complete'' status, any delays in identifying and possibly litigating Potentially Responsible Parties (PRPs) are captured in total cleanup time. Certain sites belong to federal facilities (i.e. military branches, Department of Defense, Department of Energy), so we include an indicator for whether the Superfund site belongs to a federal facility. Without a full organizational investigation, it is difficult to say whether government ownership would shorten or lengthen cleanup time. In such a case, the regulator (EPA) and the regulated (federal site owners) belong to the same entity, the US government, which does not sue itself except under rare occasions of constitutional crisis. Therefore, it is possible that government ownership could avoid lengthy court battles and thus shorten cleanup time. However, since the funding source for the project must ultimately come from taxpayers, the EPA may lack incentive to establish quick funding responsibility from an outside party, while the federal offices involved may take additional time to negotiate the handling of cleanup and its payment or may even need to wait for additional funding from the legislative branch. 
+
+We also control for the availability of resources to accommodate fast and efficient enforcement and cleanup process with regional indicators. Figure \ref{map} maps which EPA regions serve which states; certain EPA Regions also serve tribal nations.
+ Resources and funding allocation may vary across EPA-designated regions. State spending derives from site frequency, whether PRPs perform the cleanup, and population density. From 1999-2013, the EPA spent the most Trust Fund dollars on site cleanup in Region 2. This region includes New York and New Jersey and has a considerable number of large sites with no responsible parties found. The EPA spent about \$2.5 billion in this region, comprising about 32\% of the total cleanup funds on non-federal NPL sites during that time \parencite{GAO2015}. The methods of assigning pollution responsibility and recouping funding also vary across Superfund regions: \textcite{church2001cleaning} find that Regions 3 and 10 utilize alternative dispute resolution more often, while Regions 2 and 5 tend to litigate. Thus, we include dummies to control for unobserved differences at the regional level.
+ 
+ \begin{figure}[H] \centering
+\includegraphics[width=0.75\textwidth]{us-regions.png}
+\caption{\small A map from the EPA's website showing the ten EPA regions (\underline{https://www.epa.gov/aboutepa/visiting-regional-office}). \label{map}}
+\end{figure}
+
+Finally, questions of environmental protection are rather politicized in the United States. To control for any unobserved heterogeneity caused by local party preference, we include a binary variable equal to one if the district hosting the Superfund site is Democratic-controlled and zero if the district is Republican-controlled. To add this variable to the analysis, a district layer for the 97$^\mathrm{th}$ and 114$^\mathrm{th}$ Congressional assemblies is intersected with previous layers (demographics and CAG) in ArcGIS.
+
+Table \ref{summstat} presents the summary statistics for the relevant community characteristics and control variables near Superfund sites. 
+Cleanup completion occurs for 67\% of sites in our dataset, and the average time of cleanup is 5,340 days ($\sim$14.5 years). With regard to different time periods, cleanup is finished for 83\% of sites listed during the 1980s (with 5,935 days average duration), 67\%  listed in the 1990s (5,236 days), 21\% from the 2000s (4,261 days), and for only 1\% of sites listed during the 2010s (2,176 days). 
+The sample consists of 1,177 non-federal sites and 150 federal sites, 
+while the average present worth of a site's cost is \$15,103,198. 
+The average population within a one-mile radius of a Superfund site is 596 people, and the median yearly income of nearby households is \$25,010. 
+Additionally, some of the census tract populations have higher values of minority and elderly population than are commonly seen in typical zip code demographic variables; as mentioned before, because census tracts are smaller, they can capture more granularity in population distribution close to a site. Unfortunately, the comparison of Superfund site demographics to non-polluted location demographics throughout the rest of the US and the question of how this came to be is beyond the scope of this paper. We can, however, note that the median US household income in 2017 was \$60,336 \parencite{Guzman2018a}, which is a stark difference from the median near Superfund sites. 
+
+
+
+\section{Empirical Models and Findings}\label{metrics}
+
+We use survival analysis to estimate the length of time from final listing on the National Priority List (NPL) until cleanup completion and how this time relates to various demographic characteristics of the affected community and site-specific characteristics.  
+\newcommand{\comm}{\mathrm{CommunityChars}_i}
+%Survival analysis can demonstrate how the demographic and site-specific characteristics of a Superfund site are correlated with the length of time in the cleanup process. 
+Survival analysis applies when subjects are tracked until an event occurs (called ``failure'' in the jargon; success of cleanup completion is a failure of survival). In our study, the ``event'' has happened for sites which have reached ``construction completion'' status. The sites which have not reached this point are right-censored as we cannot observe their full survival time. Additionally, we are interested in the {\it risk} of failure, called the hazard ratio, which can only be measured by this econometric method; in our analysis, the hazard ratio represents the likelihood of site reaching the cleanup construction status. 
+
+The survival function $S(t)$, denotes the probability of duration from the starting point of study until time $t$: 
+
+\begin{equation}
+S(t)=\operatorname{Prob}(T_i>t)=1-F(t)  \label{surv}
+\end{equation}
+where $T_i$ denotes the time until which Superfund site $i$ is still ``alive'' or not yet cleaned, and $F(\cdot)$ is the cumulative distribution function of survival times. Thus $F(t)$ measures the probability of survival -- remaining on the NPL -- until time $t$.
+
+We estimate the length of time from listing date to cleanup completion date with Cox proportional hazards regression analysis, a semi-parametric method which allows us to determine how different variables affect the hazard. 
+Using an exponential distribution, the model takes the form:
+
+\begin{equation}
+\lambda_{i}(t|X_{i}) =\lambda_{0}(t)\exp(\beta \comm + \gamma X_{i}) \label{PH1}
+\end{equation}
+where both $\comm$ and controls $X_{i}=(x_{i1}, x_{i2},..., x_{ik})$ are column vectors of covariates for site $i$, $\beta$ and $\gamma$ are row vectors of regression coefficients, $\lambda_{i}$ is the expected hazard calculated for each subject at the time that construction completion takes place, and the baseline hazard $\lambda_{0}$ represents the probability of event occurrence when all explanatory variables have zero value. The interpretation of the hazard ratio (H.R.) is more straightforward. As an illustration, if we consider two sites, $i = \{1, 2\}$, with covariates $X_{1}$ and $X_{2}$, then the ratio of their hazards at time $t$ is:
+
+\begin{equation}
+\frac{\lambda(t|X_{1})}{\lambda(t|X_{2})}=\frac{\lambda_{0}(t) \exp(\gamma X_{1})}{\lambda_{0}(t) \exp(\gamma X_{2})}=\frac{\exp(\gamma X_{1})}{\exp(\gamma X_{2})}=\exp(\gamma(X_{1}-X_{2}))
+\end{equation}
+Thus the hazard ratio depends on the difference between two sites' covariates. If there is only one covariate considered ($k=1$), and if the difference in the two sites' explanatory variable is exactly one unit ($x_{11}- x_{21}=1$), then the hazard ratio is the exponential of the regression coefficient (H.R. $= \e^{\gamma_1}$). A hazard ratio greater than one indicates that a unit increase in the variable of interest increases the ``hazard'' and thus \emph{decreases} the duration of cleanup completion, whereas a hazard ratio of less than one indicates less hazard, a higher likelihood of survival, and thus \emph{lengthens} the cleanup duration. For interpretation, if a hazard ratio is greater than one, a unit increase in the variable increases the probability of event occurrence by a percentage of $(\mathrm{H.R.}-1)\times100$. 
+
+Table \ref{cox1} presents the first two specifications of the Cox proportional hazards model analyzing Superfund cleanup time. Model 1 includes only the socioeconomic characteristics of census tracts within one mile of Superfund sites, while Model 2 adds two measures of community participation and two measures of cleanup difficulty. 
+
+\begin{table}[t]
+	\centering	\footnotesize
+	\caption{\small Cox regression estimates of cleanup time within one mile of a Superfund site, basic specification including socio-economic, participation, and some site characteristics only.} \label{cox1}
+	\tabcolsep 9pt
+		\begin{tabular}{lccc|ccc}
+			\hline 
+			& \multicolumn{3}{c}{Model 1 } & \multicolumn{3}{c}{Model 2 } \\ 
+			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}\\ \hline
+			Minority & -0.03 & 0.97  & 0.03  & -0.03 & 0.97  & 0.03 \\
+			Population over 65  &  0.26** & 1.30  & 0.10  &  0.24* & 1.27  & 0.10 \\
+			Unemployed & 0.16  & 1.17  & 0.38  & 0.18  & 1.20  & 0.40 \\
+			Educated &  0.06** & 1.07  & 0.04  &  0.04** & 1.05  & 0.04 \\
+			Urban & -0.06*** & 0.93  & 0.02  & -0.06** & 0.93  & 0.02 \\
+			Logincome & -0.39*** & 0.67  & 0.07  & -0.37*** & 0.68  & 0.07 \\
+			Home Ownership &  0.19* & 1.22  & 0.10  &  0.20* & 1.22  & 0.10 \\
+			Voter Turnout  &       &       &       &  0.02*** & 1.03  & 0.01 \\
+			CAG   &       &       &       & -0.72** & 0.48  & 0.24 \\
+			LogNPV &       &       &       & -0.04*** & 0.96  & 0.01 \\
+			Pollution (HRS) &       &       &       & -0.01*** & 0.98  & 0.00 \\
+			\hline
+			Likelihood Ratio & 66.66***  & & &
+			157.9*** &  & \\ 
+			Wald Test & 75.93*** & & &
+			166.9*** & & \\
+			Score (LogRank) & 77.41*** & & &
+			172.2*** &  & \\
+			\hline
+			\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
+				\textsuperscript{**}$p\leq0.01$, 
+				\textsuperscript{*}$p\leq0.05$}
+	\end{tabular}
+\end{table}
+
+Model 1 provides no evidence that sites in minority areas are cleaned up any slower; the coefficient estimate is not significant and the hazard ratio is close to one. However, an increase in the fraction of residents with higher education increases the likelihood of cleanup by 7\% (H.R. = 1.07), which can also be interpreted as a decrease in average cleanup duration by 373 days (a little over a year) which, in context of the 14.5-year average cleanup time, is perhaps not so much shorter than it first appears. Sites located in urban areas take longer to clean, as do sites in areas with higher median household income. The hazard ratio for the log-income of the median household is 0.67, suggesting that a one-unit increase from the median log-income decreases the probability of cleanup at time $t$ by approximately 33\%, implying an astounding 1,760 days (almost five years) longer on average to clean up the site.\footnote{From Table \ref{summstat}, mean income is \$25,010; the median is slightly higher at \$27,202. This gives $\log(\mathrm{Median Income})=\log(27,202)\approx10.2$. Solving for $x$ in $\log(x) = 11.2$ gives an income level of around \$73,010, so an increase of \$45,808, almost triple.} This is consistent with prior results that an increase in median household income of one standard deviation is associated with a 1.5\% increase in cleanup time \parencite{Sigman2001}, though on a larger magnitude. 
+
+Model 2 adds Voter Turnout and an indicator for associated Community Advisory Group (CAG) as proxies of community participation, as well as the log of Net Present Value (NPV) and Hazard Ranking Score (HRS) as proxies of cleanup difficulty. The coefficients for variables from Model 1 are largely unchanged, and all four of the added variables are highly significant, emphasizing the importance of their inclusion. Results indicate that a 1\% increase in voter turnout is associated with a slight increase in the likelihood of completing cleanup at time $t$. The presence of a CAG, however, is correlated with a longer time until cleanup, a result consistent with prior literature \parencite{daley2004policy}. Whether the CAG is formed in response to an already lengthy duration or actually delays the cleanup is not something that our data and model can answer, though the hazard ratio may give some context. In Model 2, the CAG hazard ratio of 0.48 indicates a 52\% decrease in likelihood of cleanup when a CAG is present. If this were direct causation, we would expect to never see community involvement in this form; thus we anticipate some endogeneity in CAG formation, which is further investigated in Models 3e-5e.
+
+We also see that an increase in the cleanup cost\footnote{From Table \ref{summstat}, the mean NPV of a site is \$15,100,000. We use log-NPV because of suspected decreasing marginal benefits to the dollar and to keep the coefficients at a comparable magnitude for all variables.} of a site is associated with a 4\% decrease in the likelihood of cleanup, while an increase in the toxicity of a site via HRS shows a 2\% decrease.
+Additionally, both Models 1 and 2 indicate that larger fractions of the population over 65 years of age and larger fractions of home ownership are associated with shorter cleanup, suggesting that either these population groups are helpfully involved in the process and push for a faster cleanup, or that the EPA prioritizes sites with elderly residents or ownership stake. Elderly residents may be more impacted by nearby contamination, or may be more aware of a shorter time horizon, while homeowners may have fewer options for relocation and desire higher home prices.
+
+The models in Table \ref{cox2} incorporate further controls through party of the district's Congressional Representative, regional dummies (with Region 10 dropped), and the federal site indicator. We also examine a few interaction terms in Models 4 and 5. These additions retain the null effects of minority population and unemployment, as well as the positive and significant effects of educated and senior population (if at somewhat smaller magnitudes) and the negative and significant effects of income, NPV, and CAG presence. The effects of urban population, home ownership, and voter turnout are no longer significant in these specifications, indicating that the new controls have absorbed their effect. 
+
+
+
+
+\begin{table}[H]
+	\centering	
+	\caption{Cox regression estimates of cleanup time within one mile of a Superfund site, with added regional effects and interaction terms.} \label{cox2}
+	\tabcolsep 9pt
+		\scalebox{0.75}{
+		\begin{tabular}{lccc|ccc|ccc}
+			\hline
+			& \multicolumn{3}{c}{Model 3%9
+			} & \multicolumn{3}{c}{Model 4%10 
+			} & \multicolumn{3}{c}{Model 5%11 
+			} \\
+			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\ \hline
+			Minority & -0.06 & 0.94  & 0.03  & -0.05 & 0.95  & 0.03  & -0.06 & 0.94  & 0.03 \\
+			Population over 65  & 0.157** & 1.17  & 0.10  & 0.27** & 1.32  & 0.09  & 0.17** & 1.19  & 0.10 \\
+			Unemployed & 0.19  & 1.21  & 0.46  & 0.23  & 1.26  & 0.46  & 0.26  & 1.30  & 0.46 \\
+			Educated & 0.12* & 1.13  & 0.05  & 0.12* & 1.13  & 0.05  & 0.12* & 1.13  & 0.05 \\
+			Urban & -0.04 & 0.96  & 0.02  & -0.04 & 0.96  & 0.02  & -0.04 & 0.96  & 0.02 \\
+			Logincome & -0.29** & 0.74  & 0.09  & -0.31*** & 0.73  & 0.09  & -0.31** & 0.73  & 0.09 \\
+			Home Ownership & 0.02  & 1.02  & 0.08  & 0.10  & 1.10  & 0.08  & 0.03  & 1.03  & 0.08 \\
+			Voter Turnout  & -0.00262&0.9974&	0.01183&	-0.004867	&0.99514&	0.0117&	-0.001416&	0.9986&	0.01141 \\
+			Dem. Rep. & 0.16** & 1.18  & 0.07* & 0.11**  & 1.11  & 0.05  & 0.15* & 1.17  & 0.08 \\
+			CAG   & -0.75** & 0.47  & 0.26  & -0.74** & 0.47  & 0.26  & -0.74** & 0.47  & 0.26 \\
+			Minority$\times$  &       &       &       & \multirow{2}{*}{0.00}  & \multirow{2}{*}{1.00}  & \multirow{2}{*}{0.01}  &       &       &  \\
+			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
+			Minority$\times$ &       &       &       & \multirow{2}{*}{0.04}  & \multirow{2}{*}{1.04}  & \multirow{2}{*}{0.04}  &       &       &  \\
+			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Minority$\times$CAG &       &       &       &       &       &       &  {-0.17} &  {0.85}  & {0.16} \\
+			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.10*} & \multirow{2}{*}{1.11}  & \multirow{2}{*}{0.04} \\
+			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Educated$\times$CAG &       &       &       &       &       &       & 0.02  & 1.02  & 0.07 \\
+			LogNPV & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01 \\
+			Pollution (HRS)& -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00 \\
+			Federal & -1.05*** & 0.35  & 0.13  & -1.06*** & 0.35  & 0.13  & -1.07*** & 0.34  & 0.13 \\
+			Region1 & -0.62*** & 0.53  & 0.18  & -0.65*** & 0.52  & 0.18  & -0.55*** & 0.58  & 0.22 \\
+			Region2 & -0.76*** & 0.47  & 0.17  & -0.74*** & 0.47  & 0.17  & -0.62*** & 0.53  & 0.18 \\
+			Region3 & -0.50** & 0.60  & 0.17  & -0.55*** & 0.57  & 0.17  & -0.43** & 0.65  & 0.19 \\
+			Region4 & -0.18 & 0.83  & 0.18  & -0.12 & 0.89  & 0.18  & 0.03  & 1.03  & 0.19 \\
+			Region5 & -0.35* & 0.70  & 0.15  & -0.35* & 0.70  & 0.15  & -0.26 & 0.77  & 0.20 \\
+			Region6 & 0.13  & 1.14  & 0.20  & 0.18  & 1.20  & 0.20  & 0.31  & 1.36  & 0.19 \\
+			Region7 & -0.22 & 0.80  & 0.20  & -0.19 & 0.82  & 0.20  & -0.10 & 0.91  & 0.24 \\
+			Region8 & -0.65* & 0.52  & 0.26  & -0.57* & 0.56  & 0.26  & -0.46 & 0.63  & 0.28 \\
+			Region9 & -0.88*** & 0.41  & 0.24  & -0.96*** & 0.38  & 0.24  & -0.87*** & 0.42  & 0.22 \\			
+			\hline 
+			Likelihood Ratio & 312.4***  & & &
+			317.3*** &  & &
+			314.6*** & &\\ 
+			Wald Test & 296.1*** & & &
+			302.1*** & & &
+			295.9*** & &\\
+			Score (LogRank) & 309.8*** & & &
+			317.2*** &  & &
+			310.5*** & &\\
+			\hline
+			\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
+				\textsuperscript{**}$p\leq0.01$, 
+				\textsuperscript{*}$p\leq0.05$}
+	\end{tabular}}
+\end{table}
+
+
+Models 3 through 5 indicate that Superfund sites located within districts that lean Democratic are about 11-18\% more likely to reach ``construction complete'' status. Additionally, Regions 1, 2, 3, 5, 8 and 9 are all less likely than Region 10 (AK, WA, OR, ID) to experience cleanup completion. This is not so surprising, as New York, New Jersey, and California have the most Superfund sites in the country, while their regions %(Region 2 has NY and NJ while 9 contains CA in addition to AZ, HI, and NV) 
+receive the most EPA funding. Model 2 already indicated that costlier sites move more slowly, and these results further suggest that regional differences beyond money are significantly correlated with remedial progress. The federal indicator shows a consistent effect in all three models in Table \ref{cox2}, suggesting that cleanup work at federal sites takes longer compared to non-federal sites. Of the earlier hypotheses, this appears to indicate that intra-governmental negotiation is not as hurried as litigation and settlement with private firms. 
+
+Model 4 focuses on any differential effect of minority presence with community participation, adding the interaction of minority fraction with voter turnout and party preference, to no effect. Model 5 examines the interaction of minority and higher eduction with CAG presence and education with party preference. Only the interaction between education and Congressional party has any significance, exhibiting a differential effect of education in so-called ``blue'' states; education has an additional positive association with cleanup hazard -- meaning faster cleanup -- in Democratic-leaning areas. This interaction decreases the negativity of the estimated coefficients for Regions 1, 2, and 3 (northeastern states) and removes significance of the Region 5 (Great Lakes region); hence the regional dummies absorb this differential effect when not controlled for. 
+
+
+%%%%%%%%%%%%
+Each specification so far has used demographic variables from the census \emph{prior} to the site's listing to ensure the determinants of cleanup are exogenous. Models 3e through 5e use the same variable specifications as those in Table \ref{cox2}, but instead implement ten-year periods centered around the census year as an endogeneity check. Sites listed between 1980 and 1985 use the 1980 census as a reference, while sites listed 1986-1995, 1996-2005, and 2006-2013 use the 1990, 2000, and 2010 censuses respectively. Table \ref{coxE} displays results mostly consistent with the initial specifications, particularly with regard to race and CAG presence. Education and party preference lose significance, while urban population and voter turnout gain it, which may indicate some endogenous movement of the populace. The fact that minority population remains non-significant confirms the earlier results in this section, but CAG's continued significance indicates concern regarding the construction and inclusion of the variable. Further study into CAG establishment timeline, possibly controlling for significant historical periods in the Superfund program's history, is needed in order to better understand the method of impact: does a CAG itself slow cleanup down, or are such groups established after some time in order to speed things up?
+
+\begin{table}[H]
+	\centering	
+	\caption{Endogeneity check of Cox regression estimates of cleanup time within one mile of a Superfund site using closest census date, same model specifications as Table \ref{cox2}.} \label{coxE}
+	\tabcolsep 9pt
+	\scalebox{0.83}{
+		\begin{tabular}{lccc|ccc|ccc}
+			\hline 
+			& \multicolumn{3}{c}{Model 3e } & \multicolumn{3}{c}{Model 4e} & \multicolumn{3}{c}{Model 5e } \\
+			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}  & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}  & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\ \hline
+			Minority & -0.07 & 0.93  & 0.03  & -0.43 & 0.65  & 0.29  & -0.07 & 0.93  & 0.04 \\
+			Population over 65  & 0.14** & 1.16  & 0.10  & 0.15** & 1.16  & 0.10  & 0.14* & 1.15  & 0.10 \\
+			Unemployed & 0.35  & 1.42  & 0.39  & 0.34  & 1.40  & 0.39  & 0.34  & 1.41  & 0.40 \\
+			Educated & 0.10  & 1.11  & 0.04  & 0.09  & 1.09  & 0.04  & 0.09  & 1.10  & 0.06 \\
+			Urban & -0.05** & 0.95  & 0.02  & -0.05** & 0.94  & 0.02  & -0.04** & 0.95  & 0.02 \\
+			Logincome & -0.18*** & 0.83  & 0.07  & -0.18*** & 0.83  & 0.07  & -0.19*** & 0.83  & 0.07 \\
+			Home Ownership & 0.01  & 1.01  & 0.10  & 0.04  & 1.04  & 0.10  & 0.02  & 1.02  & 0.11 \\
+			Voter Turnout  & 0.01*** & 1.01  & 0.01  & 0.02** & 1.00  & 0.01  & 0.02** & 1.01  & 0.01 \\
+			Dem. Rep. & 0.16  & 1.18  & 0.08  & 0.12  & 1.13  & 0.08  & 0.16  & 1.17  & 0.10 \\
+			CAG   & -0.68*** & 0.51  & 0.24  & -0.69** & 0.50  & 0.24  & -0.98*** & 0.37  & 0.34 \\
+			Minority$\times$  &       &       &       & \multirow{2}{*}{0.01}  & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.01}  &       &       &  \\
+			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
+			Minority$\times$ &       &       &       & \multirow{2}{*}{0.15}  & \multirow{2}{*}{1.16}  & \multirow{2}{*}{0.08}  &       &       &  \\
+			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Minority$\times$CAG &       &       &       &       &       &       &  {-0.98} &  {0.38}  & {0.76} \\
+			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.01*} & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.04} \\
+			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Educated$\times$CAG &       &       &       &       &       &       & 0.21  & 1.24  & 0.14 \\
+			LogNPV & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01 \\
+			Pollution (HRS) & -0.01*** & 0.98  & 0.00  & -0.02*** & 0.98  & 0.00  & -0.01*** & 0.98  & 0.00 \\
+			Federal & -1.07*** & 0.34  & 0.13  & -1.07*** & 0.34  & 0.13  & -1.08*** & 0.34  & 0.13 \\
+			Region1 & -0.51* & 0.60  & 0.21  & -0.48* & 0.61  & 0.21  & -0.51* & 0.60  & 0.21 \\
+			Region2 & -0.65** & 0.52  & 0.18  & -0.66** & 0.52  & 0.18  & -0.64** & 0.52  & 0.18 \\
+			Region3 & -0.46 & 0.63  & 0.19  & -0.47 & 0.63  & 0.19  & -0.45 & 0.64  & 0.19 \\
+			Region4 & 0.00  & 1.00  & 0.18  & -0.03 & 0.97  & 0.18  & 0.00  & 1.00  & 0.18 \\
+			Region5 & -0.28 & 0.76  & 0.20  & -0.27 & 0.76  & 0.20  & -0.27 & 0.76  & 0.20 \\
+			Region6 & 0.26  & 1.29  & 0.19  & 0.26  & 1.29  & 0.19  & 0.26  & 1.29  & 0.19 \\
+			Region7 & -0.22 & 0.80  & 0.23  & -0.23 & 0.79  & 0.23  & -0.22 & 0.80  & 0.23 \\
+			Region8 & -0.31 & 0.73  & 0.24  & -0.32 & 0.72  & 0.24  & -0.32 & 0.73  & 0.24 \\
+			Region9 & -0.98*** & 0.37  & 0.23  & -1.01*** & 0.36  & 0.23  & -0.97*** & 0.38  & 0.23 \\
+			\hline
+			\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
+				\textsuperscript{**}$p\leq0.01$, 
+				\textsuperscript{*}$p\leq0.05$}
+	\end{tabular}}
+\end{table}
+
+
+Finally, Table \ref{coxH} verifies whether the results of the survival analysis thus far are robust to distance specification. Models 3h through 5h investigate a half-mile radius around Superfund sites instead of the one-mile radius used previously. 
+
+
+\begin{table}[H]
+	\centering	
+	\caption{Specification check of Cox regression estimates of cleanup time within a half-mile distance of a Superfund site, same model specifications as Table \ref{cox2}.} \label{coxH}
+	\tabcolsep 9pt
+	\scalebox{0.83}{
+		\begin{tabular}{lccc|ccc|ccc}
+			\hline 
+			& \multicolumn{3}{c}{Model 3h} & \multicolumn{3}{c}{Model 4h} & \multicolumn{3}{c}{Model 5h} \\
+			&\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\\hline
+			Minority & -0.17 & 0.85  & 0.07  & -0.86 & 0.42  & 0.76  & -0.15 & 0.86  & 0.07 \\
+			Population over 65  & 0.25** & 1.30  & 0.10  & 0.24** & 1.27  & 0.10  & 0.20** & 1.22  & 0.09 \\
+			Unemployed & 0.99  & 2.68  & 0.82  & 0.91  & 2.49  & 0.82  & 0.97  & 2.64  & 0.82 \\
+			Educated & 0.25  & 1.28  & 0.10  & 0.25  & 1.29  & 0.10  & 0.22  & 1.24  & 0.12 \\
+			Urban & -0.08** & 0.92  & 0.04  & -0.08** & 0.92  & 0.04  & -0.08*** & 0.92  & 0.04 \\
+			Logincome & -0.30*** & 0.74  & 0.08  & -0.31** & 0.74  & 0.08  & -0.30*** & 0.74  & 0.08 \\
+			Home Ownership & 0.19* & 1.22  & 0.10  & 0.18** & 1.20  & 0.10  & 0.21** & 1.23  & 0.08 \\
+			Voter Turnout  & 0.02** & 1.00  & 0.01  & -0.01** & 1.00  & 0.01  & 0.01** & 1.00  & 0.01 \\
+			Dem. Rep. & 0.16  & 1.17  & 0.08  & 0.15  & 1.17  & 0.09  & 0.11  & 1.12  & 0.12 \\
+			CAG   & -0.73*** & 0.48  & 0.26  & -0.73** & 0.48  & 0.26  & -0.75*** & 0.47  & 0.34 \\
+			Minority$\times$  &       &       &       & \multirow{2}{*}{0.01}  & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.01}  &       &       &  \\
+			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
+			Minority$\times$ &       &       &       & \multirow{2}{*}{0.02}  & \multirow{2}{*}{1.02}  & \multirow{2}{*}{0.13}  &       &       &  \\
+			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Minority$\times$CAG &       &       &       &       &       &       &  {0.11} &  {1.11}  & {0.41} \\
+			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.05} & \multirow{2}{*}{1.05}  & \multirow{2}{*}{0.10} \\
+			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
+			Educated$\times$CAG &       &       &       &       &       &       &-0.02 & 0.98  & 0.20 \\
+			LogNPV & -0.05*** & 0.94  & 0.01  & -0.06*** & 0.94  & 0.01  & -0.05*** & 0.94  & 0.01 \\
+			Pollution (HRS)& -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00 \\
+			Federal & -1.03*** & 0.35  & 0.13  & -1.04*** & 0.35  & 0.13  & -1.04*** & 0.35  & 0.13 \\
+			Region1 & -0.52** & 0.59  & 0.22  & -0.50** & 0.59  & 0.22  & -0.52* & 0.59  & 0.22 \\
+			Region2 & -0.62*** & 0.54  & 0.18  & -0.63** & 0.53  & 0.18  & -0.62** & 0.54  & 0.18 \\
+			Region3 & -0.42 & 0.66  & 0.20  & -0.42 & 0.65  & 0.20  & -0.41 & 0.66  & 0.20 \\
+			Region4 & 0.09  & 1.10  & 0.19  & 0.09  & 1.10  & 0.20  & 0.09  & 1.09  & 0.20 \\
+			Region5 & -0.26 & 0.77  & 0.21  & -0.25 & 0.78  & 0.20  & -0.26 & 0.77  & 0.21 \\
+			Region6 & 0.29  & 1.34  & 0.20  & 0.28  & 1.33  & 0.20  & 0.28  & 1.33  & 0.20 \\
+			Region7 & -0.08 & 0.93  & 0.25  & -0.07 & 0.93  & 0.25  & -0.07 & 0.93  & 0.25 \\
+			Region8 & -0.35 & 0.70  & 0.28  & -0.36 & 0.70  & 0.28  & -0.35 & 0.70  & 0.28 \\
+			Region9 & -0.99*** & 0.37  & 0.23  & -1.01*** & 0.36  & 0.23  & -0.98*** & 0.37  & 0.23 \\						
+			\hline 
+		Likelihood Ratio & 261.5***  & & &
+			262.4*** &  & &
+			261.8*** & &\\ 
+			Wald Test & 246.4*** & & &
+			247.1*** & & &
+			246.8*** & &\\
+			Score (LogRank) & 253.8*** & & &
+			254.5*** &  & &
+			254.4*** & &\\
+			\hline
+			\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
+				\textsuperscript{**}$p\leq0.01$, 
+				\textsuperscript{*}$p\leq0.05$}
+	\end{tabular}}
+\end{table}
+
+All three models demonstrate overall robustness of results, other than a few notable variables. Education, which was significant in the one-mile specification of Models 3 through 5, is now insignificant, while urban population and home ownership now are, with home ownership again shortening time to cleanup and urban lengthening it. This perhaps indicates some residential sorting with respect to education as the radius around the Superfund site shrinks. Additionally, for the half-mile radius, voter turnout is more important than party: though the coefficients are small in magnitude and flip signs in Model 4h, the effect of voter turnout is significant, while that of party preference is not. This may indicate that cleanup is no longer a partisan issue for those closest to a site.
+
+\section{Conclusion}\label{conc}
+
+Over the past century, more than one thousand hazardous sites in the US originated from commercial and industrial waste spilled by industrial sites \parencite{EPA2011}. These sites pose substantial health risks to nearby communities; contaminated sites impact health in both the short and long term, sometimes even through decreased learning outcomes in school-aged children \parencite{Pastor2004} or through birth defects in future generations. The Love Canal disaster led Congress to establish the Superfund program in 1980. Since then, the EPA has targeted and removed numerous hazardous sites. However, the pace of cleanup varies among sites, while the average time between listing sites and removing them has grown since instantiation. In this paper, we investigated the underlying factors of cleanup time differences, particularly the demographics and involvement of a site's surrounding community. 
+
+Our findings suggest that cleanup time does not depend on the racial composition of communities living in vicinity of Superfund sites, though again, this says nothing about the location of polluted sites themselves. However, we do find evidence that median household income correlates with a longer remediation process. This suggests that sites in wealthy neighborhoods are more difficult, in some regard: perhaps the litigation process is more complex, or perhaps those communities favor more comprehensive, costly remedies. Faster cleanup is associated with less costly, ``easy'' sites, evidenced by our results for site-specific characteristics like cleanup cost, pollution level, and regional differences. Additionally, since the EPA prioritizes funding ongoing projects, the organization may delay starting cleanup for sites with a high estimated cost or a high level of pollution \parencite{GAO2015}, and the complexity of cleanup at these sites naturally drags out the process as well. 
+It would be elucidating to further investigate this result to pinpoint the root cause: whether the longer cleanup of Superfund sites in wealthier communities is because the EPA overly invests in a comprehensive strategy or shelves the project for litigation/administrative reasons. Unfortunately, our data provides the length of time between listing, completion, and removal, but not the intermediate point of litigation completion and construction start -- especially because these two points may overlap.
+
+On the other hand, we do find that community participation on a whole, proxied by voter turnout, the presence of a Community Advisory Group (CAG), and even education on some level, greatly affects the efficiency and time of cleanup. We observe that education and voter turnout both contribute to a shorter cleanup, but the mechanism is unclear. Some plausible mechanisms are that an educated, engaged populace prefers quick removal or that it assists the EPA in its efforts in the community. Our robustness check with centered census-dates indicates endogeneity issues with the CAG indicator; it appears as if the presence of a CAG is positively correlated with cleanup duration, but improved, as-of-yet-unaccessible data and a more exact time-series approach are needed to disentangle cause and effect.
+
+Our main limitation is the need to use only data at time of listing. This is necessitated by the survival analysis approach of the Cox model and our concerns for endogeneity that could arise from community mobility if using data from during the cleanup process. This is also why we use the listing's calculated Net Present Value as cost estimate created prior to the actual cleanup, and why CAG existence -- which is not determined prior to the cleanup but during -- is such a problematic variable. 
+
+Our results do, however, have some value, particularly regarding the correlation of \textit{ex ante} community characteristics and overall site cleanup length. They also provide some limited policy implications about boosting public awareness of the true impact of communities on the EPA's Superfund decisions. In this study, we found that many more complex factors may impact the whole Superfund process than demographics alone. Furthermore, the racial bias observed in the 80's may have come from or been exacerbated by the extent to which communities were or were not involved in the process; this involvement depends on community factors such as income, voter turnout, or education, all of which may be correlated with race in various US regions. Therefore, local campaigns and groups, especially environmental justice networks focusing on hazard education and voter turnout, would play an extremely important role in facilitating well-informed communities that can influence the EPA's policies regarding hazardous waste lands. Future administrative action and legislation, like the resolution to create a ``Green New Deal'' \parencite{Ocasio-Cortez2019}, can aid communities by working within the established Superfund bureaucratic structure by providing further community education to reduce enforcement delays and improve the cost efficiency of chosen cleanup methods. 
+
+%%%%%%%%%%
+%%%%%%%%%%
+
+
+
+\section*{Competing Interests Declaration}
+
+The authors declare none. 
+
+%% 
+\renewcommand*{\bibfont}{\normalfont\small}
+\printbibliography
+
+%%%%%%%%%%
+%%%%%%%%%%
+
+
+
+
+
+%\begin{figure}[H] \centering
+%\caption{A screenshot from the EPA's interactive Superfund sites map showing Cook County and the pop-up information for the Lake Calumet Cluster site (\underline{https://www.epa.gov/superfund/search-superfund-sites-where-you-live}, 6/1/2021). \label{calumet}}
+%\includegraphics[width=\textwidth]{SuperfundMap-Cook-CalumetPopup.png}
+%\end{figure}
+
+%\newpage
+
+
+%\begin{figure}[H] \centering
+%\caption{A map of zip code 60633 from Google Maps, and a zoomed-in view on census tract 8388. Both maps highlight the Lake Calumet Clusters and show the Lake Calumet River. The 60633 zip code clearly contains additional census tracts (i.e. 5502, 5501, parts of 8258.01 and 8527), while census tract 8388 includes some of the residents located in zip code 60617 just north. \label{zip}}
+%\includegraphics[width=0.8\textwidth]{ZipCode-60633-2.png}
+
+%\vspace{10pt}
+
+%\includegraphics[width=0.8\textwidth]{CensusTract-Cook-Calumet.png}
+%\vspace{10pt}
+%\includegraphics[width=0.8\textwidth]{CensusTract-SheetKey.png}
+%\end{figure}
+
+
+
+
+
+\end{document}

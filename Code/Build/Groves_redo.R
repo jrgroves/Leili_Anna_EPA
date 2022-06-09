@@ -106,10 +106,30 @@ sum.stat<-core2 %>%
          hg_haz = case_when(q_sites == "hg_haz" ~ 1,
                                TRUE ~0),
          v_hg_haz = case_when(q_sites == "v_hg_haz" ~ 1,
-                               TRUE ~0)) %>%
-  
+                               TRUE ~0),
+         region1 = case_when(REGION == 1 ~ 1,
+                             TRUE ~ 0),
+         region2 = case_when(REGION == 2 ~ 1,
+                             TRUE ~ 0),
+         region3 = case_when(REGION == 3 ~ 1,
+                             TRUE ~ 0),
+         region4 = case_when(REGION == 4 ~ 1,
+                             TRUE ~ 0),
+         region5 = case_when(REGION == 5 ~ 1,
+                             TRUE ~ 0),
+         region6 = case_when(REGION == 6 ~ 1,
+                             TRUE ~ 0),
+         region7 = case_when(REGION == 7 ~ 1,
+                             TRUE ~ 0),
+         region8 = case_when(REGION == 8 ~ 1,
+                             TRUE ~ 0),
+         region9 = case_when(REGION == 9 ~ 1,
+                    TRUE ~ 0),
+         region10 = case_when(REGION == 10 ~ 1,
+                    TRUE ~ 0)) %>%
   select(event, duration, npv, npv2, SITE_SCORE, federal, CAG, pop, permin, pero65, unemp, pernhs, perhsd,
-         percld, minc,  lnminc2, vote, party, v_low_haz, low_haz, hg_haz, v_hg_haz)
+         percld, minc,  lnminc2, vote, party, perocc, starts_with("region")) %>%
+  select(!REGION)
 
   sum.m<-signif(sapply(sum.stat, mean), 4)
   sum.st<-signif(sapply(sum.stat, sd), 4)
@@ -120,45 +140,53 @@ sum.stat<-core2 %>%
   
   #Models
 
-mod1a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt, data=core2)
-mod1b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+(1|Start_YR), data=core2)
+mod1a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc, data=core2)
 
-mod2a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+vote+CAG+lognpv+q_sites, data=core2)
-mod2b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+vote+CAG+lognpv+q_sites+(1|Start_YR), data=core2)
+mod1b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+(1|Start_YR), data=core2)
 
-mod3a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION, data=core2)
-mod3b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+(1|Start_YR), data=core2)
+mod2a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+SITE_SCORE, data=core2)
 
-mod4a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-               perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+permin*q_vote+permin*party,
-               data=core2)
-mod4b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+permin*q_vote+permin*party+
-                 (1|Start_YR), data=core2)
+mod2b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+SITE_SCORE+(1|Start_YR), data=core2)
 
-mod5a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+permin*CAG+
-                 perhsd*party+percld*party+perhsd*CAG+percld*CAG,
-               data=core2)
-mod5b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+permin*CAG+
-                 perhsd*party+percld*party+perhsd*CAG+percld*CAG+(1|Start_YR), data=core2)
+mod2c <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites, data=core2)
 
-mod6a <- coxph(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+q_sites*CAG,
-               data=core2)
-mod6b <- coxme(Surv(duration, event)~permin+unemp+peru18+pero65+perhsd+percld+lnminc2+
-                 perocc+perrnt+q_vote+CAG+lognpv+q_sites+party+FEDERAL+REGION+q_sites*CAG+
-                 (1|Start_YR), data=core2)
+mod2d <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+(1|Start_YR), data=core2)
 
+
+mod3a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION, data=core2)
+mod3b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+(1|Start_YR), data=core2)
+
+mod4a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 permin*vote+permin*party, data=core2)
+mod4b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 permin*vote+permin*party+(1|Start_YR), data=core2)
+
+mod5a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 permin*CAG+perhsd*party+percld*party+perhsd*CAG+percld*CAG, data=core2)
+mod5b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 permin*CAG+perhsd*party+percld*party+perhsd*CAG+percld*CAG+(1|Start_YR), data=core2)
+
+mod6a <- coxph(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 q_sites*CAG, data=core2)
+mod6b <- coxme(Surv(duration, event)~permin+pero65+unemp+perhsd+percld+lnminc2+perocc+
+                 vote+CAG+npv2+q_sites+party+FEDERAL+REGION+
+                 q_sites*CAG+(1|Start_YR), data=core2)
+               
+            
 mod1b.o<-coxme_table(mod1b)
 mod2b.o<-coxme_table(mod2b)
+mod2d.o<-coxme_table(mod2d)
 mod3b.o<-coxme_table(mod3b)
 mod4b.o<-coxme_table(mod4b)
 mod5b.o<-coxme_table(mod5b)
@@ -166,11 +194,11 @@ mod6b.o<-coxme_table(mod6b)
 
 #Code to join all coxme tables for output
 #put all data frames into list
-df_list <- list(mod1b.o, mod2b.o, mod3b.o, mod4b.o, mod5b.o, mod6b.o)
+df_list <- list(mod1b.o, mod2b.o, mod2d.o, mod3b.o, mod4b.o, mod5b.o, mod6b.o)
 
 #merge all data frames in list
 coxme.out <- df_list %>% reduce(full_join, by='var')
   write.csv(coxme.out, file="./Analysis/Output/ME_Tables.csv")
-stargazer(mod1a, mod2a, mod3a, mod4a, mod5a, mod6a,
-          type="text",
-          out = "./Analysis/Output/PH_Table.txt")
+stargazer(mod1a, mod2a, mod2c, mod3a, mod4a, mod5a, mod6a,
+          type="html",
+          out = "./Analysis/Output/PH_Table.html")

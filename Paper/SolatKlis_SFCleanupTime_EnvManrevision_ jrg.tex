@@ -339,6 +339,21 @@ In terms of education the coefficients on both the percentage of the population 
 
 Voter participation is also added as a proxy for participation; however, the sign is opposite of those for other participation methods. This may very well be an indication that voting may be a different form of participation in the process, namely it may be measuring political pressures being applied by encombants to speed the process to ensure positive responses from voters in the area. Again, we would need data spliting the cleanup time between the two key components leaving this as merely a conjecture. The remaining coefficient estimates indicate that more expenseive cleanup processes take longer with the negative coefficient on the adjusted NPV variable and the site score coefficients are in line with the observations from Figure 2 previous. 
 
+[INSERT COX2 TABLE HERE]
+
+Table \ref{cox2} shows the estimates for the frailty models only when various other controls and interactions are added to the specification. The first column adds indicators for the party of the representive for the disctrict within which the site is located, sites that are already owned by Federal government agencies and the regional varables. The party of the representative is not statistically significant in any specification nor is the effect, albeit positive, very economically significant. Sites owned by intenies in the Federal government show significantly faster cleanup times, as one would expect, but we would need to be able to split the given duration into the enforcement and cleanup preiods to know clearly attribute this to faster enforcement phases. 
+
+The addition of the regional indicators (with Region 1 acting as the group reference) are intersting not necessarily for their own estimated coefficients, but the impact on other coefficients in the model. In and of themselves, only regions four, five, six and ten show statistically significant impacts and in all cases they see slightly faster cleanup times compared to the reference group. The most interesting impact from adding the control variables is that the magnitude on the minority, college degree, owner occupied and unemployment rates all decrease indicating that the variables where previously capturing regional effects as well. Refering back to Figure three we see that regions four and five cover the entire region of the U.S. that would be classified as ''The South``, region five captures the eastern most ''Midwest``, and region ten captures the area classified as the ''Northwest``. One can easily draw connections between generalization about these areas within the United States and the variables that most impacted by the inclusion of the regional controls. 
+
+It is also interesting to note that region nine, the only region to have a negative coefficient estimate indicating a slower cleanup time, the same region that includes California. The lack of significance could likely be tied to the fact that the region also includes Nevada and Arizona which include a great deal of Federally owned sites as well.
+
+Specifically the regional controls cause the coefficient for the percentage of college degrees to loose signficiance and move closer to zero (less of a negative impact on duration) while the coefficient on percentage of owner-occupied homes also looses significance but also changes sign. The high standard errors for these coefficients, however, limit any information we might gain from that change in sign. The largest impact; however, from the regional controls is the very large impact on the percentage of minority variable which indicates that cleanups are even slower in areas with more minorities than before we controlled for region. This seems to strengthn the case for further investigation into a causal link between minorities and cleanup times. 
+
+Column two begin to add interaction varibles by adding an interaction between the percentage minority varible and the voter participation and representive's party affilation. The later interaction is not signficiant and is very close to zero and has no impact on the party measure itself. The interaction between vote participation and minorities; however, is significant and is very large is abosolute value indicating a very large slowing of cleanup. While the positive, large, and significant coefficient estimation on the minorities variable seems promising, it must be taken with the interaction coefficient. From the perspective of a given level of voter participation, increasing the percentages of minorities will significantly slow the cleanup period for a Superfund site. Likewise, for a given level of minority population, increasing voter participation will also slow the cleanup process. While this is a very intersting result; again caution must be taken because we are unable to determine if the cause is due to something in the enforcement period or these factors impacting something in the actual cleanup process. The latter effect does seem to indicate, as we noted previously with the CAG coefficient in both tables, increased participation does seem to indicate slower cleanup times. 
+
+Column three replaces these interactions with interactions between the CAG indicator and the percentage of minorities (which might shed some light on the voter participation result just discussed), percentage of high school diplomas, and percentae of college degree holders. In all three cases the estimates are not statistsically significant; however, all three show negative signs indicating slowing cleanup indicating that if we had more sites with CAGs, we might be able to reinforce the idea that community participation is related to slower cleanup. The lack of CAG observations is also likely the cause of the addition of these interactions causing the CAG coefficient itself to also loose significance. This column also reports the addition of the interaction between education and party affiliation of the representative and does show one case of statistical significance in the interaction with those with college degrees. This seems to indicate that for a given percentage of college education individuals, a democratic representative will lead to slower cleanup times. The causality of this effect is left for future work. 
+
+The final column replaces the previous interactions with one between the existance of a CAG and the quintile the site's hazard score. While not significant, again likely due to such a small CAG sample size, the magnitudes are intersting in that for a site in low hazard and high hazards (quintiles two and three), the estistance of a CAG may slow cleanup; however, in the case of a site listed as very hazardous, the effect of having a CAG may actually speed up the cleanup process. This seems to indicate that the impact of community involvement may depend on just how bad the polluation costs faced by the community are. 
 
 
 
@@ -349,85 +364,6 @@ Voter participation is also added as a proxy for participation; however, the sig
 
 
 
-
-
-
-
-Model 2 adds Voter Turnout and an indicator for associated Community Advisory Group (CAG) as proxies of community participation, as well as the log of Net Present Value (NPV) and Hazard Ranking Score (HRS) as proxies of cleanup difficulty. The coefficients for variables from Model 1 are largely unchanged, and all four of the added variables are highly significant, emphasizing the importance of their inclusion. Results indicate that a 1\% increase in voter turnout is associated with a slight increase in the likelihood of completing cleanup at time $t$. The presence of a CAG, however, is correlated with a longer time until cleanup, a result consistent with prior literature \parencite{daley2004policy}. Whether the CAG is formed in response to an already lengthy duration or actually delays the cleanup is not something that our data and model can answer, though the hazard ratio may give some context. In Model 2, the CAG hazard ratio of 0.48 indicates a 52\% decrease in likelihood of cleanup when a CAG is present. If this were direct causation, we would expect to never see community involvement in this form; thus we anticipate some endogeneity in CAG formation, which is further investigated in Models 3e-5e.
-
-We also see that an increase in the cleanup cost\footnote{From Table \ref{summstat}, the mean NPV of a site is \$15,100,000. We use log-NPV because of suspected decreasing marginal benefits to the dollar and to keep the coefficients at a comparable magnitude for all variables.} of a site is associated with a 4\% decrease in the likelihood of cleanup, while an increase in the toxicity of a site via HRS shows a 2\% decrease.
-Additionally, both Models 1 and 2 indicate that larger fractions of the population over 65 years of age and larger fractions of home ownership are associated with shorter cleanup, suggesting that either these population groups are helpfully involved in the process and push for a faster cleanup, or that the EPA prioritizes sites with elderly residents or ownership stake. Elderly residents may be more impacted by nearby contamination, or may be more aware of a shorter time horizon, while homeowners may have fewer options for relocation and desire higher home prices.
-
-The models in Table \ref{cox2} incorporate further controls through party of the district's Congressional Representative, regional dummies (with Region 10 dropped), and the federal site indicator. We also examine a few interaction terms in Models 4 and 5. These additions retain the null effects of minority population and unemployment, as well as the positive and significant effects of educated and senior population (if at somewhat smaller magnitudes) and the negative and significant effects of income, NPV, and CAG presence. The effects of urban population, home ownership, and voter turnout are no longer significant in these specifications, indicating that the new controls have absorbed their effect. 
-
-
-
-
-\begin{table}[H]
-	\centering	
-	\caption{Cox regression estimates of cleanup time within one mile of a Superfund site, with added regional effects and interaction terms.} \label{cox2}
-	\tabcolsep 9pt
-		\scalebox{0.75}{
-		\begin{tabular}{lccc|ccc|ccc}
-			\hline
-			& \multicolumn{3}{c}{Model 3%9
-			} & \multicolumn{3}{c}{Model 4%10 
-			} & \multicolumn{3}{c}{Model 5%11 
-			} \\
-			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\ \hline
-			Minority & -0.06 & 0.94  & 0.03  & -0.05 & 0.95  & 0.03  & -0.06 & 0.94  & 0.03 \\
-			Population over 65  & 0.157** & 1.17  & 0.10  & 0.27** & 1.32  & 0.09  & 0.17** & 1.19  & 0.10 \\
-			Unemployed & 0.19  & 1.21  & 0.46  & 0.23  & 1.26  & 0.46  & 0.26  & 1.30  & 0.46 \\
-			Educated & 0.12* & 1.13  & 0.05  & 0.12* & 1.13  & 0.05  & 0.12* & 1.13  & 0.05 \\
-			Urban & -0.04 & 0.96  & 0.02  & -0.04 & 0.96  & 0.02  & -0.04 & 0.96  & 0.02 \\
-			Logincome & -0.29** & 0.74  & 0.09  & -0.31*** & 0.73  & 0.09  & -0.31** & 0.73  & 0.09 \\
-			Home Ownership & 0.02  & 1.02  & 0.08  & 0.10  & 1.10  & 0.08  & 0.03  & 1.03  & 0.08 \\
-			Voter Turnout  & -0.00262&0.9974&	0.01183&	-0.004867	&0.99514&	0.0117&	-0.001416&	0.9986&	0.01141 \\
-			Dem. Rep. & 0.16** & 1.18  & 0.07* & 0.11**  & 1.11  & 0.05  & 0.15* & 1.17  & 0.08 \\
-			CAG   & -0.75** & 0.47  & 0.26  & -0.74** & 0.47  & 0.26  & -0.74** & 0.47  & 0.26 \\
-			Minority$\times$  &       &       &       & \multirow{2}{*}{0.00}  & \multirow{2}{*}{1.00}  & \multirow{2}{*}{0.01}  &       &       &  \\
-			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
-			Minority$\times$ &       &       &       & \multirow{2}{*}{0.04}  & \multirow{2}{*}{1.04}  & \multirow{2}{*}{0.04}  &       &       &  \\
-			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Minority$\times$CAG &       &       &       &       &       &       &  {-0.17} &  {0.85}  & {0.16} \\
-			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.10*} & \multirow{2}{*}{1.11}  & \multirow{2}{*}{0.04} \\
-			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Educated$\times$CAG &       &       &       &       &       &       & 0.02  & 1.02  & 0.07 \\
-			LogNPV & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01 \\
-			Pollution (HRS)& -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00 \\
-			Federal & -1.05*** & 0.35  & 0.13  & -1.06*** & 0.35  & 0.13  & -1.07*** & 0.34  & 0.13 \\
-			Region1 & -0.62*** & 0.53  & 0.18  & -0.65*** & 0.52  & 0.18  & -0.55*** & 0.58  & 0.22 \\
-			Region2 & -0.76*** & 0.47  & 0.17  & -0.74*** & 0.47  & 0.17  & -0.62*** & 0.53  & 0.18 \\
-			Region3 & -0.50** & 0.60  & 0.17  & -0.55*** & 0.57  & 0.17  & -0.43** & 0.65  & 0.19 \\
-			Region4 & -0.18 & 0.83  & 0.18  & -0.12 & 0.89  & 0.18  & 0.03  & 1.03  & 0.19 \\
-			Region5 & -0.35* & 0.70  & 0.15  & -0.35* & 0.70  & 0.15  & -0.26 & 0.77  & 0.20 \\
-			Region6 & 0.13  & 1.14  & 0.20  & 0.18  & 1.20  & 0.20  & 0.31  & 1.36  & 0.19 \\
-			Region7 & -0.22 & 0.80  & 0.20  & -0.19 & 0.82  & 0.20  & -0.10 & 0.91  & 0.24 \\
-			Region8 & -0.65* & 0.52  & 0.26  & -0.57* & 0.56  & 0.26  & -0.46 & 0.63  & 0.28 \\
-			Region9 & -0.88*** & 0.41  & 0.24  & -0.96*** & 0.38  & 0.24  & -0.87*** & 0.42  & 0.22 \\			
-			\hline 
-			Likelihood Ratio & 312.4***  & & &
-			317.3*** &  & &
-			314.6*** & &\\ 
-			Wald Test & 296.1*** & & &
-			302.1*** & & &
-			295.9*** & &\\
-			Score (LogRank) & 309.8*** & & &
-			317.2*** &  & &
-			310.5*** & &\\
-			\hline
-			\addlinespace[1ex]
-			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
-				\textsuperscript{**}$p\leq0.01$, 
-				\textsuperscript{*}$p\leq0.05$}
-	\end{tabular}}
-\end{table}
-
-
-Models 3 through 5 indicate that Superfund sites located within districts that lean Democratic are about 11-18\% more likely to reach ``construction complete'' status. Additionally, Regions 1, 2, 3, 5, 8 and 9 are all less likely than Region 10 (AK, WA, OR, ID) to experience cleanup completion. This is not so surprising, as New York, New Jersey, and California have the most Superfund sites in the country, while their regions %(Region 2 has NY and NJ while 9 contains CA in addition to AZ, HI, and NV) 
-receive the most EPA funding. Model 2 already indicated that costlier sites move more slowly, and these results further suggest that regional differences beyond money are significantly correlated with remedial progress. The federal indicator shows a consistent effect in all three models in Table \ref{cox2}, suggesting that cleanup work at federal sites takes longer compared to non-federal sites. Of the earlier hypotheses, this appears to indicate that intra-governmental negotiation is not as hurried as litigation and settlement with private firms. 
-
-Model 4 focuses on any differential effect of minority presence with community participation, adding the interaction of minority fraction with voter turnout and party preference, to no effect. Model 5 examines the interaction of minority and higher eduction with CAG presence and education with party preference. Only the interaction between education and Congressional party has any significance, exhibiting a differential effect of education in so-called ``blue'' states; education has an additional positive association with cleanup hazard -- meaning faster cleanup -- in Democratic-leaning areas. This interaction decreases the negativity of the estimated coefficients for Regions 1, 2, and 3 (northeastern states) and removes significance of the Region 5 (Great Lakes region); hence the regional dummies absorb this differential effect when not controlled for. 
 
 
 %%%%%%%%%%%%

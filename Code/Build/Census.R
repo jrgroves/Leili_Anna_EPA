@@ -36,7 +36,7 @@ for(i in seq(1980, 2010, 10)){
   
   temp3<-temp2 %>%
     select(!year) %>%
-    mutate(across(AV0AA:B37AB, ~.x*share),
+    mutate(across(AV0AA:B37AB, ~(.x*share)*weight),
            year = i) %>%
     select(!GJOIN) 
   

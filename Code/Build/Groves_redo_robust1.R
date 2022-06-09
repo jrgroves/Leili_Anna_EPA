@@ -43,7 +43,11 @@ core1<-core %>%
                            president == "bush_son2" ~ 0,
                            TRUE ~ 1),
          Start_YR = year,
-         year = round(as.numeric(Start_YR) / 10) * 10,
+         year = case_when(Start_YR <1986 ~ 1980,
+                          Start_YR > 1984 & Start_YR < 1996 ~ 1990,
+                          Start_YR > 1994 & Start_YR < 2006 ~ 2000,
+                          Start_YR > 2004 ~ 2010,
+                          TRUE ~ 0),
          REGION = factor(REGION),
          FEDERAL = factor(FEDERAL),
          q_vote = case_when(vote <= 50.90 ~ "vote_1",
@@ -71,27 +75,6 @@ core1<-core %>%
 
 core2<-merge(core1, cendat2, by=c("site_id", "year"))
 save(core2, file="./Analysis/Output/core.RData")
-
-
-###Figure One ####
-
-fig.data <- core2 %>%
-  group_by(year.end) %>%
-  tally(event) %>%
-  filter(year.end<2011)
-
-fig.one <- ggplot(fig.data, aes(x = year.end, y = n))+
-           geom_line()+
-           ylab("Number of Cleanups")+
-           xlab("Year")+
-           ggtitle("Figure One: Superfund Cleanups Completed by Year") +
-           labs(caption = "Source: EPA")+ 
-           scale_x_continuous(breaks = seq(1980,2010,2))+
-           theme_bw()
-
-fig.two <- ggplot(core2, aes(x=q_sites, y=duration))+
-  geom_boxplot()+
-  theme_bw()
 
 ### Table One ####
 
@@ -214,7 +197,7 @@ df_list <- list(mod1b.o, mod2b.o, mod2d.o, mod3b.o, mod4b.o, mod5b.o, mod6b.o)
 
 #merge all data frames in list
 coxme.out <- df_list %>% reduce(full_join, by='var')
-  write.csv(coxme.out, file="./Analysis/Output/ME_Tables.csv")
+  write.csv(coxme.out, file="./Analysis/Output/ME_Tables_robust1.csv")
 stargazer(mod1a, mod2a, mod2c, mod3a, mod4a, mod5a, mod6a,
           type="html",
-          out = "./Analysis/Output/PH_Table.html")
+          out = "./Analysis/Output/PH_Table_robust1.html")

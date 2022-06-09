@@ -18,7 +18,7 @@ cendat<-cendat %>%
   select(!contains("195"),
          !ends_with("M"))
 
-load("./Data/sites.RData")  
+load("./Data/sites05.RData")  
   sites<-rbind(sites80, sites90, sites00, sites10)
   
   sites <- sites %>%
@@ -80,4 +80,4 @@ cendat2$perwht[which(cendat2$perwht>1)]<-1.0  #fixed 5 rounding errors
 cendat2$permin[which(cendat2$permin<0)]<-0.0  #fixed 5 rounding errors
 
 
-save(cendat2, file="./Data/Census.RData")
+save(cendat2, file="./Data/Census05.RData")

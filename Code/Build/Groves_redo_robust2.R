@@ -26,7 +26,7 @@ coxme_table <- function (mod){
 
 
 core<-read.csv("./Data/paper1_data.csv")
-load(file="./Data/Census.RData")
+load(file="./Data/Census05.RData")
 
 core1<-core %>%
   mutate(unemp = (f_maleunem + f_femunem)/2) %>%
@@ -214,7 +214,7 @@ df_list <- list(mod1b.o, mod2b.o, mod2d.o, mod3b.o, mod4b.o, mod5b.o, mod6b.o)
 
 #merge all data frames in list
 coxme.out <- df_list %>% reduce(full_join, by='var')
-  write.csv(coxme.out, file="./Analysis/Output/ME_Tables.csv")
+  write.csv(coxme.out, file="./Analysis/Output/ME_Tables_robust2.csv")
 stargazer(mod1a, mod2a, mod2c, mod3a, mod4a, mod5a, mod6a,
           type="html",
-          out = "./Analysis/Output/PH_Table.html")
+          out = "./Analysis/Output/PH_Table_robust2.html")

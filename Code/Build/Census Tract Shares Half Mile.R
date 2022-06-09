@@ -18,8 +18,8 @@ core2<-core %>%
   select(site_id, LATITUDE, LONGITUDE, Start_YR, year) 
 
 sites<-st_as_sf(core2, coords=c("LONGITUDE","LATITUDE"), crs="+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
-sites2<-st_buffer(sites, dist = 1609.34) 
-
+#sites2<-st_buffer(sites, dist = 1609.34) 
+sites2<-st_buffer(sites, dist = 804.972) 
 
 sites2$area<-st_area(sites2)
 
@@ -41,7 +41,8 @@ for(i in seq(1,length(sp2))){
   temp2<-temp2 %>%
     mutate(aa = st_area(temp2),
            share = as.numeric(aa/Shape_Area),
-           weight = as.numeric(aa/((1609.34^2)*pi)),
+           #weight = as.numeric(aa/((1609.34^2)*pi)),
+           weight = as.numeric(aa/((804.672^2)*pi)),
            weight = case_when(weight > 1.0 ~ 1.0,
                               TRUE ~ weight)) %>%
     select(GISJOIN, site_id, share, weight, year) %>%
@@ -72,7 +73,8 @@ tract90<-st_read("./Data/1990/US_tract_1990_conflated.shp")
     temp2<-temp2 %>%
       mutate(aa = st_area(temp2),
              share = as.numeric(aa/Shape_Area),
-             weight = as.numeric(aa/((1609.34^2)*pi)),
+             #weight = as.numeric(aa/((1609.34^2)*pi)),
+             weight = as.numeric(aa/((804.672^2)*pi)),
              weight = case_when(weight > 1.0 ~ 1.0,
                                 TRUE ~ weight)) %>%
       select(GISJOIN, site_id, share, weight, year) %>%
@@ -92,7 +94,8 @@ tract90<-st_read("./Data/1990/US_tract_1990_conflated.shp")
   tr<-st_make_valid(tr)
   
   sp<-sites2 %>%
-    filter(year==1980)
+    filter(year==1980,
+           !row_number() %in% c(34, 112))  #Two sites have no tracts within 1/2 mile
   
   sp2<-st_intersects(sp, tr)
   
@@ -103,7 +106,8 @@ tract90<-st_read("./Data/1990/US_tract_1990_conflated.shp")
     temp2<-temp2 %>%
       mutate(aa = st_area(temp2),
              share = as.numeric(aa/Shape_Area),
-             weight = as.numeric(aa/((1609.34^2)*pi)),
+             #weight = as.numeric(aa/((1609.34^2)*pi)),
+             weight = as.numeric(aa/((804.672^2)*pi)),
              weight = case_when(weight > 1.0 ~ 1.0,
                                 TRUE ~ weight)) %>%
       select(GISJOIN, site_id, share, weight, year) %>%
@@ -134,7 +138,8 @@ tract90<-st_read("./Data/1990/US_tract_1990_conflated.shp")
     temp2<-temp2 %>%
       mutate(aa = st_area(temp2),
              share = as.numeric(aa/Shape_area),
-             weight = as.numeric(aa/((1609.34^2)*pi)),
+             #weight = as.numeric(aa/((1609.34^2)*pi)),
+             weight = as.numeric(aa/((804.672^2)*pi)),
              weight = case_when(weight > 1.0 ~ 1.0,
                                 TRUE ~ weight)) %>%
       select(GISJOIN, site_id, share, weight, year) %>%
@@ -149,5 +154,5 @@ tract90<-st_read("./Data/1990/US_tract_1990_conflated.shp")
   
 #Saves Data for Future Use####  
   
-  save(sites80, sites90, sites00, sites10, file="./Data/sites.RData")
+  save(sites80, sites90, sites00, sites10, file="./Data/sites05.RData")
   

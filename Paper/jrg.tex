@@ -115,8 +115,6 @@ This paper investigates the correlation of socioeconomic characteristics of comm
 
 {We gratefully acknowledge comments from seminar participants at Northern Illinois University, participants of the 2017 meetings of the Midwest Economics Association, Chris Timmins, Lala Ma, Jay Shimshack, Matthew McGinty, Richard ``Max'' Melstrom, Jeremy Groves, and prior anonymous reviewers.}
 
-
-
 %\section*{Transparency of Data}
 
 %Data sources are described in Section \ref{data} of the article and were constructed by Dr. Solatyavari at Northern Illinois University through available file downloads and extraction from a Superfund site's Record of Decision. %Replication materials will be made available at Huskie Commons at \underline{https://commons.lib.niu.edu/}.
@@ -141,50 +139,58 @@ Section \ref{lit} describes the background of Superfund, the cleanup process, an
 Under the Superfund program, sites with serious hazards are placed on the National Priority List (NPL). This step formalizes the Environmental Protection Agency's (EPA) commitment to permanently remove the contamination, finding responsible parties, and resolving fault and cleanup funding with them. When cleanup construction is finished, the EPA monitors NPL sites for some time after to assure that all threats have been addressed. The site is then deleted from the NPL. According to the Comprehensive Environmental Response, Compensation and Liability Information System Public Access Database, at the time of writing there were 1,666 sites ``listed on the NPL,'' of which 1,161 were sites classified as ``construction complete'' and 378 sites ``deleted from the NPL.'' Figure \ref{fig1} depicts the number of site cleanups completed since the beginning of Superfund until 2010.
 
 \begin{figure}[h] \centering
-	\includegraphics[width=0.75\textwidth]{figure1_new}
+	\includegraphics[width=0.75\textwidth]{fig1.png}
 	\caption{Superfund cleanups completed by year.} \label{fig1}
 \end{figure}
 
 %%%Cleanup time
 
-Cleanup time itself can vary: some communities wait a long time for cleanup completion, while other sites resolve more quickly. The length of time it takes for a site to complete the cleanup process is important to communities living nearby as they may be impacted by the contamination on the site, directly or indirectly, by the continued existance of the site. The variation in the observed cleanup duration can be divided into the two main time-frames for a Superfund site: enforcement time and actual cleanup time.
+Cleanup time itself can vary: some communities wait a long time for cleanup completion, while other sites resolve more quickly. The length of time it takes for a site to complete the cleanup process is important to communities living nearby as they may be impacted by the contamination on the site, directly or indirectly, by the continued existence of the site. The variation in the observed cleanup duration can be divided into the two main time-frames for a Superfund site: enforcement time and actual cleanup time.
 
-Enforcement time includes the work of identifing the responsible parties and developing a plan for the actual cleanup process while cleanup time referres to the ''shovels in the ground'' stage when actual cleanup is occuring. Unfortunately we are unable to observe the distinct time-frames so our analysis is restricted to being a correlation analysis rather than a causation analysis. We do not; however, view this as a disadvantage given our objective of identifing which communities suffer higher costs from contamination and the fact that a longer overall duration, irrespective of time-frame, impose higher costs on the nearby residents and that only the finalization of the cleanup marks a turning point for the surrounding community.
+Enforcement time includes the work of identifying the responsible parties and developing a plan for the actual cleanup process while cleanup time referrers to the ''shovels in the ground'' stage when actual cleanup is occurring. Unfortunately we are unable to observe the distinct time-frames so our analysis is restricted to being a correlation analysis rather than a causation analysis. We do not; however, view this as a disadvantage given our objective of identifying which communities suffer higher costs from contamination and the fact that a longer overall duration, irrespective of time-frame, impose higher costs on the nearby residents and that only the finalization of the cleanup marks a turning point for the surrounding community.
 
 \begin{table}[t] 
 	%\renewcommand\thetable{3.1}
 	\centering	 \footnotesize
 	\caption{\small Summary Statistics for Superfund Sites and Population within 1 Mile of Site} \label{summstat}
 	\tabcolsep 9pt
-		\begin{tabular}{lrrrr}
-		\hline 
-			Variable (Observations: {$N = 1327$}) & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{S.D.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ \hline  
-		%ADR used & {0.36} & \multicolumn{1}{r}{0.48} &  {0} &  {1} \\
-			Completed cleanup &  {0.67} &  {0.469} &  {0} &  {1} \\
-			Duration of Cleanup (days) &  {5,340} &  {3,051} &  {221} &  {12,540} \\
-			NPV (in \$10,000) &  {1510} &  {6153} &  {122} &  {147,600} \\
-			Pollution (Hazard Ranking Score) &  {43.46} &  {8.74} &  {28.5} &  {84.91} \\
-			%Number of PRPs &  {40} &  {145} &  {0} &  {2,626} \\
-			{Federal}  &  {0.11} &  {0.31} &  {0} &  {1} \\
-			CAG   &  {0.03} &  {0.18} &  {0} &  {1} \\
-			%EJ program  &  {0.11} &  {0.28} &  {0.06} &  {0.15} \\
-			Population &  {596} &  {913.25} &  {0} &  {5736} \\
-			Black (fraction of population, in percentage points) &  {0.54} &  {1.57} &  {0} &  {0.96} \\
-			Hispanic &  {0.33} &  {1.29} &  {0} &  {0.85} \\
-			Population over 65 &  {0.41} &  {1.2} &  {0} &  {0.96} \\
-			Unemployed &  {0.13} &  {0.17} &  {0} &  {0.8} \\
-			Educated  &  {0.10} &  {0.06} &  {0} &  {0.2} \\
-			Urban &  {0.61} &  {0.38} &  {0} &  {0.72} \\
-			Income (in \$1) &  {25,010} &  {12,628} &  {5,000} &  {94,320} \\
-			Voter turnout  &  {0.54} &  {0.05} &  {0.40} &  {0.67} \\
-			Democratic Representative &  {0.5} &  {0.5} &  {0} &  {1} \\
+    \begin{tabular}{l|l|cccc}
+    \hline
+        Variable (N = 1398) & Description & Mean & Std. Dev. & Minimum & Maximum \\ \hline
+        event & Completed Cleanup & 0.6819 & 0.4659 & 0.0000 & 1.0000 \\ 
+        duration & Duration of Cleanup (days) & 5389.0000 & 3039.0000 & 111.0000 & 12540.0000 \\ 
+        npv & NPV (\$100,000) & 143.9000 & 599.4000 & 0.0000 & 14760.0000 \\ 
+        SITE\_SCORE & Hazard Ranking Score & 43.1400 & 8.6630 & 28.5100 & 84.9100 \\ 
+        federal & Federally Owned Sites & 0.1196 & 0.3246 & 0.0000 & 1.0000 \\ 
+        CAG & Community Advisory Group & 0.0344 & 0.1823 & 0.0000 & 1.0000 \\ 
+        pop & Population & 1061.0000 & 998.6000 & 0.2249 & 5893.0000 \\ 
+        permin & Percentage Minority & 0.1501 & 0.1902 & 0.0000 & 0.9868 \\ 
+        pero65 & Percentage over 65 years & 0.1117 & 0.0511 & 0.0000 & 0.3667 \\ 
+        unemp & Unemployment Rate & 0.0554 & 0.0533 & 0.0015 & 0.2976 \\ 
+        pernhs & Percentage with no High School Degree & 0.0675 & 0.0483 & 0.0000 & 0.3878 \\ 
+        perhsd & Percentage with High School Degree or GED & 0.4392 & 0.0828 & 0.0025 & 0.8094 \\ 
+        percld & Percentage with a College Degree & 0.1050 & 0.0741 & 0.0004 & 0.5498 \\ 
+        perocc & Percentage of Owner-Occupied Housing & 0.2396 & 0.0740 & 0.0000 & 0.3801 \\ 
+        minc & Median Income (2010 \$) & 12330.0000 & 12370.0000 & 3.3510 & 76590.0000 \\ 
+        vote & Voter Participation Rate & 0.5466 & 0.0490 & 0.3970 & 0.6690 \\ 
+        party & Democratic Representative & 0.5029 & 0.5002 & 0.0000 & 1.0000 \\ 
+        region1 & EPA Region 1 & 0.07378 & 0.2615 & 0.0000 & 1.0000 \\ 
+        region2 & EPA Region 2 & 0.1633 & 0.3698 & 0.0000 & 1.0000 \\ 
+        region3 & EPA Region 3 & 0.1433 & 0.3505 & 0.0000 & 1.0000 \\ 
+        region4 & EPA Region 4 & 0.1347 & 0.3415 & 0.0000 & 1.0000 \\ 
+        region5 & EPA Region 5 & 0.1812 & 0.3853 & 0.0000 & 1.0000 \\ 
+        region6 & EPA Region 6 & 0.06734 & 0.2507 & 0.0000 & 1.0000 \\ 
+        region7 & EPA Region 7 & 0.06017 & 0.2379 & 0.0000 & 1.0000 \\ 
+        region8 & EPA Region 8 & 0.0394 & 0.1946 & 0.0000 & 1.0000 \\ 
+        region9 & EPA Region 9 & 0.06805 & 0.2519 & 0.0000 & 1.0000 \\ 
+        region10 & EPA Region 10 & 0.06877 & 0.2531 & 0.0000 & 1.0000 \\
 			\hline
 	\end{tabular}
 \end{table}
 
 
 \begin{figure}[t] \centering
-\includegraphics[width=0.75\textwidth]{histogram_combined.jpg}
+\includegraphics[width=0.75\textwidth]{fig2.png}
 \caption{A combined histogram of process times for Superfund sites. The black columns show the distribution of cleanup times in 2-year bins for ``Completed'' sites. The light gray columns show the distribution of years (to February 2021) since listing date for sites listed on the NPL but which have not yet attained ``Completed'' status, including four sites that were ``Deleted from the NPL'' without having ever been ``Completed.''
 \label{hist1}}
 \end{figure}
@@ -303,37 +309,51 @@ where the $Z_{j}$ denotes the group over which frailty is assumed, in our case t
 Table \ref{cox1} presents the first specifications of the Cox proportional hazards model with and without the frailty assumption analyzing Superfund cleanup time. Columns 1 and 2 includes only the socioeconomic characteristics of census tracts within one mile of Superfund sites, columns 3 and 4 include two measures of community participation and two measure of site quality, and columns 5 and 6 replace the continuous measure of the site hazard score with the quintiles.  
 
 \begin{table}[t]
-	\centering	\footnotesize
-	\caption{\small Cox regression estimates of cleanup time within one mile of a Superfund site, basic specification including socio-economic, participation, and some site characteristics only.} \label{cox1}
+    \centering	\footnotesize
+	\caption{\small Cox regression estimates of cleanup time within one mile of a Superfund site with and without frailty assumed across site Start Year, basic specification including socio-economic, participation, and some site characteristics only.} \label{cox1}
 	\tabcolsep 9pt
-		\begin{tabular}{lccc|ccc}
-			\hline 
-			& \multicolumn{3}{c}{Model 1 } & \multicolumn{3}{c}{Model 2 } \\ 
-			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}\\ \hline
-			Minority & -0.03 & 0.97  & 0.03  & -0.03 & 0.97  & 0.03 \\
-			Population over 65  &  0.26** & 1.30  & 0.10  &  0.24* & 1.27  & 0.10 \\
-			Unemployed & 0.16  & 1.17  & 0.38  & 0.18  & 1.20  & 0.40 \\
-			Educated &  0.06** & 1.07  & 0.04  &  0.04** & 1.05  & 0.04 \\
-			Urban & -0.06*** & 0.93  & 0.02  & -0.06** & 0.93  & 0.02 \\
-			Logincome & -0.39*** & 0.67  & 0.07  & -0.37*** & 0.68  & 0.07 \\
-			Home Ownership &  0.19* & 1.22  & 0.10  &  0.20* & 1.22  & 0.10 \\
-			Voter Turnout  &       &       &       &  0.02*** & 1.03  & 0.01 \\
-			CAG   &       &       &       & -0.72** & 0.48  & 0.24 \\
-			LogNPV &       &       &       & -0.04*** & 0.96  & 0.01 \\
-			Pollution (HRS) &       &       &       & -0.01*** & 0.98  & 0.00 \\
-			\hline
-			Likelihood Ratio & 66.66***  & & &
-			157.9*** &  & \\ 
-			Wald Test & 75.93*** & & &
-			166.9*** & & \\
-			Score (LogRank) & 77.41*** & & &
-			172.2*** &  & \\
-			\hline
-			\addlinespace[1ex]
-			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
-				\textsuperscript{**}$p\leq0.01$, 
-				\textsuperscript{*}$p\leq0.05$}
-	\end{tabular}
+		\begin{tabular}{l|cccccc}
+    \hline
+        Variable & (1) & (2) & (3) & (4) & (5) & (6) \\ \hline
+        permin & -0.472** & -0.425* & -0.229 & -0.223 & -0.450** & -0.529** \\ 
+        ~ & 0.214 & 0.221 & 0.222 & 0.228 & 0.224 & 0.23 \\ 
+        pero65 & 0.605 & 0.868 & 0.597 & 0.838 & 1.101 & 1.345* \\ 
+        ~ & 0.814 & 0.815 & 0.808 & 0.813 & 0.787 & 0.792 \\ 
+        unemp & 1.631** & 1.133 & 1.595** & 1.317* & 1.085 & 0.934 \\ 
+        ~ & 0.687 & 0.711 & 0.688 & 0.701 & 0.715 & 0.722 \\ 
+        perhsd & -1.123** & -1.879*** & -1.049** & -1.732*** & -0.545 & -1.511** \\ 
+        ~ & 0.506 & 0.579 & 0.511 & 0.572 & 0.539 & 0.591 \\ 
+        percld & -1.615*** & -1.836*** & -1.436** & -1.72*** & -0.614 & -1.215** \\ 
+        ~ & 0.548 & 0.599 & 0.561 & 0.6 & 0.567 & 0.601 \\ 
+        lnminc2 & -0.008 & 0.007 & -0.004 & 0.006 & -0.022 & -0.009 \\ 
+        ~ & 0.026 & 0.027 & 0.027 & 0.027 & 0.027 & 0.028 \\ 
+        perocc & 2.628*** & 3.187*** & 2.860*** & 3.207*** & 1.529** & 2.066*** \\ 
+        ~ & 0.658 & 0.689 & 0.657 & 0.682 & 0.667 & 0.687 \\ \hline
+        vote & ~ & ~ & 1.969*** & 2.184*** & 2.081*** & 2.185*** \\ 
+        ~ & ~ & ~ & 0.729 & 0.737 & 0.714 & 0.718 \\ 
+        CAG & ~ & ~ & -0.674*** & -0.612** & -0.835*** & -0.772*** \\ 
+        ~ & ~ & ~ & 0.24 & 0.242 & 0.24 & 0.242 \\ \hline
+        npv2 & ~ & ~ & -0.098*** & -0.097*** & -0.081*** & -0.078*** \\ 
+        ~ & ~ & ~ & 0.016 & 0.016 & 0.016 & 0.016 \\ 
+        SITE\_SCORE & ~ & ~ & -0.017*** & -0.01** & ~ & ~ \\ 
+        ~ & ~ & ~ & 0.004 & 0.004 & ~ & ~ \\ 
+        q\_siteslow\_haz & ~ & ~ & ~ & ~ & 0.851*** & 0.899*** \\ 
+        ~ & ~ & ~ & ~ & ~ & 0.083 & 0.084 \\ 
+        q\_siteshg\_haz & ~ & ~ & ~ & ~ & -0.275*** & -0.19** \\ 
+        ~ & ~ & ~ & ~ & ~ & 0.092 & 0.096 \\ 
+        q\_sitesv\_hg\_haz & ~ & ~ & ~ & ~ & -0.287** & -0.189 \\ 
+        ~ & ~ & ~ & ~ & ~ & 0.116 & 0.119 \\ \hline
+        Observations & 1,396 & 1,396 & 1,396 & 1,396 & 1,396 & 1,396 \\ 
+        Events & 952 & 952 & 952 & 952 & 952 & 952 \\ 
+        Log Likelihood & -6229.55 & -6191.68 & -6188.59 & -6167.54 & -6097.72 & -6081.52 \\ 
+        AIC & 12473.11 & 12425.20 & 12399.16 & 12377.73 & 12221.45 & 12205.32 \\ 
+        Variance of Random Effects & ~ & 0.13006 & ~ & 0.06273 & ~ & 0.03566 \\ 
+		\hline
+		\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.01$, 
+				\textsuperscript{**}$p\leq0.05$, 
+				\textsuperscript{*}$p\leq0.01$}
+    \end{tabular}
 \end{table}
 
 Columns 1, 3, and 5 assume no frailty while columns 2, 4, and 6 assume there is frailty shared by the start year of the Superfund site. In comparing the column pairs we see that for most cases the assumption of frailty does not impact the statistical significance of the variables and only slightly alters the magnitude of the estimates. [enter diagnostic]
@@ -346,12 +366,90 @@ In terms of education the coefficients on both the percentage of the population 
 
 Voter participation is also used as a proxy for community activism in columns three through six and the show that areas with higher voter turnout also see faster cleanup. This may very well be an indication that voting may be a different form of participation in the process, namely it may be measuring political pressures being applied by incumbents to speed the process to ensure positive responses from voters in the area. Again, we would need data splitting the cleanup time between the two key components leaving this as merely a conjecture. The remaining coefficient estimates indicate that more expensive cleanup processes take longer with the negative coefficient on the adjusted NPV variable and the site score coefficients are in line with the observations from Figure 2 previous. 
 
-\begin{table}[t]
+\begin{table}[!ht]
 	\centering	\footnotesize
 	\caption{\small Cox regression estimates with frailty of cleanup time within one mile of a Superfund site with additional controls and interactions added.} \label{cox2}
 	\tabcolsep 9pt
-		\begin{tabular}{lccc|ccc}
-			
+    \begin{tabular}{l|cccc}
+    \hline
+        Variable & (1) & (2) & (3) & (4) \\ \hline
+        permin & -0.789*** & 3.817* & -0.74*** & -0.8*** \\ 
+        ~ & 0.253 & 2.301 & 0.254 & 0.254 \\ 
+        pero65 & 0.669 & 0.576 & 0.759 & 0.718 \\ 
+        ~ & 0.794 & 0.796 & 0.795 & 0.793 \\ 
+        unemp & 0.414 & 0.5 & 0.406 & 0.401 \\ 
+        ~ & 0.75 & 0.755 & 0.753 & 0.753 \\ 
+        perhsd & -0.93 & -0.823 & -1.172 & -0.895 \\ 
+        ~ & 0.6 & 0.604 & 0.733 & 0.6 \\ 
+        percld & -0.02 & 0.021 & 0.849 & -0.015 \\ 
+        ~ & 0.628 & 0.63 & 0.835 & 0.628 \\ 
+        lnminc2 & -0.018 & -0.018 & -0.016 & -0.017 \\ 
+        ~ & 0.03 & 0.03 & 0.03 & 0.03 \\ 
+        perocc & -0.322 & -0.419 & -0.299 & -0.435 \\ 
+        ~ & 0.753 & 0.756 & 0.759 & 0.755 \\ \hline
+        vote & 0.426 & 1.504 & 0.355 & 0.548 \\ 
+        ~ & 1.107 & 1.225 & 1.109 & 1.108 \\ 
+        CAG & -0.728*** & -0.724*** & 0.502 & -0.294 \\ 
+        ~ & 0.246 & 0.246 & 2.006 & 0.586 \\ 
+        npv2 & -0.108*** & -0.107*** & -0.107*** & -0.108*** \\ 
+        ~ & 0.017 & 0.017 & 0.017 & 0.017 \\ 
+        q\_siteslow\_haz & 0.837*** & 0.842*** & 0.843*** & 0.853*** \\ 
+        ~ & 0.086 & 0.086 & 0.086 & 0.086 \\ 
+        q\_siteshg\_haz & -0.183* & -0.18* & -0.177* & -0.174* \\ 
+        ~ & 0.097 & 0.097 & 0.097 & 0.098 \\ 
+        q\_sitesv\_hg\_haz & -0.144 & -0.15 & -0.15 & -0.171 \\ 
+        ~ & 0.121 & 0.121 & 0.121 & 0.124 \\ \hline
+        party & 0.064 & 0.059 & 0.052 & 0.059 \\ 
+        ~ & 0.077 & 0.092 & 0.389 & 0.077 \\ 
+        FEDERAL & 1.11*** & 1.106*** & 1.107*** & 1.123*** \\ 
+        ~ & 0.144 & 0.144 & 0.144 & 0.144 \\ 
+        REGION2 & 0.017 & 0.061 & -0.012 & 0.022 \\ 
+        ~ & 0.156 & 0.158 & 0.157 & 0.156 \\ 
+        REGION3 & 0.208 & 0.246 & 0.186 & 0.213 \\ 
+        ~ & 0.155 & 0.157 & 0.156 & 0.156 \\ 
+        REGION4 & 0.438** & 0.459** & 0.408** & 0.445** \\ 
+        ~ & 0.184 & 0.185 & 0.185 & 0.185 \\ 
+        REGION5 & 0.363** & 0.363** & 0.346** & 0.363** \\ 
+        ~ & 0.147 & 0.147 & 0.148 & 0.147 \\ 
+        REGION6 & 0.699*** & 0.712*** & 0.675*** & 0.707*** \\ 
+        ~ & 0.203 & 0.205 & 0.203 & 0.203 \\ 
+        REGION7 & 0.307 & 0.327* & 0.283 & 0.301 \\ 
+        ~ & 0.194 & 0.195 & 0.195 & 0.195 \\ 
+        REGION8 & 0.269 & 0.288 & 0.207 & 0.253 \\ 
+        ~ & 0.235 & 0.236 & 0.238 & 0.236 \\ 
+        REGION9 & -0.304 & -0.365 & -0.319 & -0.285 \\ 
+        ~ & 0.235 & 0.247 & 0.236 & 0.236 \\ 
+        REGION10 & 0.696*** & 0.73*** & 0.685*** & 0.709*** \\ 
+        ~ & 0.177 & 0.178 & 0.177 & 0.177 \\ \hline
+        permin:vote & ~ & -8.793** & ~ & ~ \\ 
+        ~ & ~ & 4.423 & ~ & ~ \\ 
+        permin:party & ~ & 0.017 & ~ & ~ \\ 
+        ~ & ~ & 0.434 & ~ & ~ \\ \hline
+        permin:CAG & ~ & ~ & -3.525 & ~ \\ 
+        ~ & ~ & ~ & 2.739 & ~ \\ 
+        perhsd:party & ~ & ~ & 0.353 & ~ \\ 
+        ~ & ~ & ~ & 0.827 & ~ \\ 
+        percld:party & ~ & ~ & -1.492 & ~ \\ 
+        ~ & ~ & ~ & 1.045 & ~ \\ 
+        perhsd:CAG & ~ & ~ & -1.474 & ~ \\ 
+        ~ & ~ & ~ & 3.836 & ~ \\ 
+        percld:CAG & ~ & ~ & -1.873 & ~ \\ 
+        ~ & ~ & ~ & 3.136 & ~ \\ \hline
+        CAG:q\_siteslow\_haz & ~ & ~ & ~ & -0.894 \\ 
+        ~ & ~ & ~ & ~ & 0.72 \\ 
+        CAG:q\_siteshg\_haz & ~ & ~ & ~ & -0.689 \\ 
+        ~ & ~ & ~ & ~ & 0.831 \\ 
+        CAG:q\_sitesv\_hg\_haz & ~ & ~ & ~ & 0.326 \\ 
+        ~ & ~ & ~ & ~ & 0.723 \\ \hline
+        Observations & 1,396 & 1,396 & 1,396 & 1,396 \\ 
+        Events & 952 & 952 & 952 & 952 \\ 
+        Log Likelihood & -6020.40 & -6018.52 & -6018.21 & -6017.93 \\ 
+        AIC & 12110.04 & 12110.02 & 12115.60 & 12111.21 \\ 
+        Variance of Random Effects & 0.06566 & 0.06437 & 0.06582 & 0.06702 \\ \hline
+    	\addlinespace[1ex]
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.01$, 
+				\textsuperscript{**}$p\leq0.05$, 
+				\textsuperscript{*}$p\leq0.01$}
 	\end{tabular}
 \end{table}
 
@@ -365,148 +463,120 @@ The addition of the regional controls cause all of the characteristic controls t
 
 The largest impact from the regional controls is the very large impact on the coefficient for the percentage of minorities variable which indicates that cleanups are even slower in areas with more minorities than before we controlled for region. While we can not confirm that this effect is independent of the possible correlation of regional definitions and geographic population distributions, even in that case, the results indicate there is something different about regions four, five, six, and ten that may speed up the process, but One alternative explanation for this could be that if there is a very high correlation between the regional definitions and U.S. population distributions, This seems to strengthen the case for further investigation into a causal link between minorities and cleanup times. 
 
-Column two begin to add interaction variables by adding an interaction between the percentage minority variable and the voter participation and representative's party affiliation. The later interaction is not signficiant and is very close to zero and has no impact on the party measure itself. The interaction between vote participation and minorities; however, is significant and is very large is abosolute value indicating a very large slowing of cleanup. While the positive, large, and significant coefficient estimation on the minorities variable seems promising, it must be taken with the interaction coefficient. From the perspective of a given level of voter participation, increasing the percentages of minorities will significantly slow the cleanup period for a Superfund site. Likewise, for a given level of minority population, increasing voter participation will also slow the cleanup process. While this is a very intersting result; again caution must be taken because we are unable to determine if the cause is due to something in the enforcement period or these factors impacting something in the actual cleanup process. The latter effect does seem to indicate, as we noted previously with the CAG coefficient in both tables, increased participation does seem to indicate slower cleanup times. 
+Column two begin to add interaction variables by adding an interaction between the percentage minority variable and the voter participation and representative's party affiliation. The later interaction is not signficiant and is very close to zero and has no impact on the party measure itself. The interaction between vote participation and minorities; however, is significant and is very large is abosolute value indicating a very large slowing of cleanup. While the positive, large, and significant coefficient estimation on the minorities variable seems promising, it must be taken with the interaction coefficient. From the perspective of a given level of voter participation, increasing the percentages of minorities will significantly slow the cleanup period for a Superfund site. Likewise, for a given level of minority population, increasing voter participation will also slow the cleanup process. While this is a very interesting result; again caution must be taken because we are unable to determine if the cause is due to something in the enforcement period or these factors impacting something in the actual cleanup process. The latter effect does seem to indicate, as we noted previously with the CAG coefficient in both tables, increased participation does seem to indicate slower cleanup times. 
 
-Column three replaces these interactions with interactions between the CAG indicator and the percentage of minorities (which might shed some light on the voter participation result just discussed), percentage of high school diplomas, and percentage of college degree holders. In all three cases the estimates are not statistically significant; however, all three show negative signs indicating slowing cleanup indicating that if we had more sites with CAGs, we might be able to reinforce the idea that community participation is related to slower cleanup. The lack of CAG observations is also likely the cause of the addition of these interactions causing the CAG coefficient itself to also loose significance. This column also reports the addition of the interaction between education and party affiliation of the representative and does show one case of statistical significance in the interaction with those with college degrees. This seems to indicate that for a given percentage of college education individuals, a democratic representative will lead to slower cleanup times. The causality of this effect is left for future work. 
+Column three replaces these interactions with interactions between the CAG indicator and the percentage of minorities (which might shed some light on the voter participation result just discussed), percentage of high school diplomas, and percentage of college degree holders. In all three cases the estimates are not statistically significant; however, all three show negative signs indicating slower cleanup in the presence of CAGs The lack of CAG observations is likely the cause of the addition of these interactions causing the CAG coefficient itself to also loose significance; however, taken jointly, slower cleanup is association with more minority and more educated populations when CAGs are present. This column also reports the addition of an interaction between education and party affiliation of the representative and none of the results are statistically significant.
 
-The final column replaces the previous interactions with one between the existence of a CAG and the quintile the site's hazard score. While not significant, again likely due to such a small CAG sample size, the magnitudes are interesting in that for a site in low hazard and high hazards (quintiles two and three), the estistance of a CAG may slow cleanup; however, in the case of a site listed as very hazardous, the effect of having a CAG may actually speed up the cleanup process. This seems to indicate that the impact of community involvement may depend on just how bad the polluation costs faced by the community are. 
+The final column replaces the previous interactions with one between the existence of a CAG and the pollution quintile if the site. While not significant, again likely due to such a small CAG sample size, the magnitudes are interesting in that for a site in the low hazard quintile the existence of a CAG may offset the relative faster cleanup compared to the very low hazard sites as the coefficient on the quintile variable is almost the same magnitude, but opposite sign, as that of the interaction effect. For high pollution (quintile three), the exitance of a CAG slows the cleanup even further slows cleanup; however, the existence of a CAG might actually speed up cleanup for sites in the highest pollution risk quintile. This seems to indicate that the impact of community involvement might not only be related to the make up of the community, but also the extent of the pollution and the associated costs. 
 
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%
-Each specification so far has used demographic variables from the census \emph{prior} to the site's listing to ensure the determinants of cleanup are exogenous. Models 3e through 5e use the same variable specifications as those in Table \ref{cox2}, but instead implement ten-year periods centered around the census year as an endogeneity check. Sites listed between 1980 and 1985 use the 1980 census as a reference, while sites listed 1986-1995, 1996-2005, and 2006-2013 use the 1990, 2000, and 2010 censuses respectively. Table \ref{coxE} displays results mostly consistent with the initial specifications, particularly with regard to race and CAG presence. Education and party preference lose significance, while urban population and voter turnout gain it, which may indicate some endogenous movement of the populace. The fact that minority population remains non-significant confirms the earlier results in this section, but CAG's continued significance indicates concern regarding the construction and inclusion of the variable. Further study into CAG establishment timeline, possibly controlling for significant historical periods in the Superfund program's history, is needed in order to better understand the method of impact: does a CAG itself slow cleanup down, or are such groups established after some time in order to speed things up?
+Each specification so far has used demographic variables from the census \emph{prior} to the site's listing to ensure the determinants of cleanup are exogenous. The results shown in columns one through four in Table \ref{coxE} use the same specifications and variables as those in Table \ref{cox2}, but instead implement ten-year periods centered around the census year as an endogeneity check. Sites listed between 1980 and 1985 use the 1980 census as a reference, while sites listed 1986-1995, 1996-2005, and 2006-2013 use the 1990, 2000, and 2010 censuses respectively. The results are mostly consistent with the initial specifications with only the magnitudes changing slightly. Further study into CAG establishment timeline, possibly controlling for significant historical periods in the Superfund program's history, is needed in order to better understand the method of impact: does a CAG itself slow cleanup down, or are such groups established after some time in order to speed things up?
 
 \begin{table}[H]
 	\centering	
 	\caption{Endogeneity check of Cox regression estimates of cleanup time within one mile of a Superfund site using closest census date, same model specifications as Table \ref{cox2}.} \label{coxE}
 	\tabcolsep 9pt
 	\scalebox{0.83}{
-		\begin{tabular}{lccc|ccc|ccc}
-			\hline 
-			& \multicolumn{3}{c}{Model 3e } & \multicolumn{3}{c}{Model 4e} & \multicolumn{3}{c}{Model 5e } \\
-			& \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}  & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}  & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\ \hline
-			Minority & -0.07 & 0.93  & 0.03  & -0.43 & 0.65  & 0.29  & -0.07 & 0.93  & 0.04 \\
-			Population over 65  & 0.14** & 1.16  & 0.10  & 0.15** & 1.16  & 0.10  & 0.14* & 1.15  & 0.10 \\
-			Unemployed & 0.35  & 1.42  & 0.39  & 0.34  & 1.40  & 0.39  & 0.34  & 1.41  & 0.40 \\
-			Educated & 0.10  & 1.11  & 0.04  & 0.09  & 1.09  & 0.04  & 0.09  & 1.10  & 0.06 \\
-			Urban & -0.05** & 0.95  & 0.02  & -0.05** & 0.94  & 0.02  & -0.04** & 0.95  & 0.02 \\
-			Logincome & -0.18*** & 0.83  & 0.07  & -0.18*** & 0.83  & 0.07  & -0.19*** & 0.83  & 0.07 \\
-			Home Ownership & 0.01  & 1.01  & 0.10  & 0.04  & 1.04  & 0.10  & 0.02  & 1.02  & 0.11 \\
-			Voter Turnout  & 0.01*** & 1.01  & 0.01  & 0.02** & 1.00  & 0.01  & 0.02** & 1.01  & 0.01 \\
-			Dem. Rep. & 0.16  & 1.18  & 0.08  & 0.12  & 1.13  & 0.08  & 0.16  & 1.17  & 0.10 \\
-			CAG   & -0.68*** & 0.51  & 0.24  & -0.69** & 0.50  & 0.24  & -0.98*** & 0.37  & 0.34 \\
-			Minority$\times$  &       &       &       & \multirow{2}{*}{0.01}  & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.01}  &       &       &  \\
-			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
-			Minority$\times$ &       &       &       & \multirow{2}{*}{0.15}  & \multirow{2}{*}{1.16}  & \multirow{2}{*}{0.08}  &       &       &  \\
-			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Minority$\times$CAG &       &       &       &       &       &       &  {-0.98} &  {0.38}  & {0.76} \\
-			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.01*} & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.04} \\
-			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Educated$\times$CAG &       &       &       &       &       &       & 0.21  & 1.24  & 0.14 \\
-			LogNPV & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01  & -0.05*** & 0.95  & 0.01 \\
-			Pollution (HRS) & -0.01*** & 0.98  & 0.00  & -0.02*** & 0.98  & 0.00  & -0.01*** & 0.98  & 0.00 \\
-			Federal & -1.07*** & 0.34  & 0.13  & -1.07*** & 0.34  & 0.13  & -1.08*** & 0.34  & 0.13 \\
-			Region1 & -0.51* & 0.60  & 0.21  & -0.48* & 0.61  & 0.21  & -0.51* & 0.60  & 0.21 \\
-			Region2 & -0.65** & 0.52  & 0.18  & -0.66** & 0.52  & 0.18  & -0.64** & 0.52  & 0.18 \\
-			Region3 & -0.46 & 0.63  & 0.19  & -0.47 & 0.63  & 0.19  & -0.45 & 0.64  & 0.19 \\
-			Region4 & 0.00  & 1.00  & 0.18  & -0.03 & 0.97  & 0.18  & 0.00  & 1.00  & 0.18 \\
-			Region5 & -0.28 & 0.76  & 0.20  & -0.27 & 0.76  & 0.20  & -0.27 & 0.76  & 0.20 \\
-			Region6 & 0.26  & 1.29  & 0.19  & 0.26  & 1.29  & 0.19  & 0.26  & 1.29  & 0.19 \\
-			Region7 & -0.22 & 0.80  & 0.23  & -0.23 & 0.79  & 0.23  & -0.22 & 0.80  & 0.23 \\
-			Region8 & -0.31 & 0.73  & 0.24  & -0.32 & 0.72  & 0.24  & -0.32 & 0.73  & 0.24 \\
-			Region9 & -0.98*** & 0.37  & 0.23  & -1.01*** & 0.36  & 0.23  & -0.97*** & 0.38  & 0.23 \\
+		
+    \begin{tabular}{l|cccc|cccc}
+    \hline
+        Variable & (1) & (2) & (3) & (4) & (5) & (6) & (7) & (8) \\ \hline
+        permin & -0.813*** & 3.326 & -0.769*** & -0.823*** & -0.762*** & 5.15* & -0.706** & -0.776*** \\ 
+        ~ & 0.256 & 2.313 & 0.256 & 0.257 & 0.29 & 2.828 & 0.29 & 0.29 \\ 
+        pero65 & 0.542 & 0.456 & 0.633 & 0.589 & 1.474* & 1.371 & 1.452 & 1.516* \\ 
+        ~ & 0.795 & 0.798 & 0.797 & 0.794 & 0.879 & 0.885 & 0.885 & 0.878 \\ 
+        unemp & 0.343 & 0.432 & 0.338 & 0.321 & 0.478 & 0.469 & 0.467 & 0.393 \\ 
+        ~ & 0.753 & 0.758 & 0.757 & 0.756 & 0.886 & 0.885 & 0.887 & 0.886 \\ 
+        perhsd & -0.953 & -0.851 & -1.201 & -0.908 & -1.72** & -1.596** & -1.898** & -1.691** \\ 
+        ~ & 0.602 & 0.606 & 0.737 & 0.602 & 0.777 & 0.781 & 0.93 & 0.774 \\ 
+        percld & -0.067 & -0.027 & 0.737 & -0.067 & -0.962 & -0.93 & -0.406 & -1.008 \\ 
+        ~ & 0.627 & 0.629 & 0.841 & 0.627 & 0.738 & 0.74 & 0.999 & 0.738 \\ 
+        lnminc2 & -0.005 & -0.006 & -0.003 & -0.004 & -0.004 & -0.002 & -0.004 & -0.002 \\ 
+        ~ & 0.03 & 0.03 & 0.03 & 0.03 & 0.032 & 0.032 & 0.032 & 0.032 \\ 
+        perocc & -0.159 & -0.25 & -0.159 & -0.289 & 0.312 & 0.124 & 0.267 & 0.182 \\ 
+        ~ & 0.757 & 0.76 & 0.763 & 0.759 & 0.88 & 0.889 & 0.885 & 0.882 \\ \hline
+        vote & 0.376 & 1.341 & 0.315 & 0.526 & 1.095 & 2.292 & 0.818 & 1.133 \\ 
+        ~ & 1.11 & 1.229 & 1.113 & 1.112 & 1.339 & 1.459 & 1.351 & 1.343 \\ 
+        CAG & -0.66*** & -0.659*** & -0.118 & -0.284 & -0.654** & -0.653** & 0.753 & 0.456 \\ 
+        ~ & 0.246 & 0.246 & 2.018 & 0.586 & 0.287 & 0.287 & 2.382 & 0.603 \\ 
+        npv2 & -0.111*** & -0.111*** & -0.111*** & -0.112*** & -0.12*** & ~ & -0.119*** & -0.12*** \\ 
+        ~ & 0.017 & 0.017 & 0.017 & 0.017 & 0.02 & 0.02 & 0.02 & 0.02 \\ 
+        q\_siteslow\_haz & 0.849*** & 0.853*** & 0.855*** & 0.864*** & 0.875*** & 0.885*** & 0.876*** & 0.9*** \\ 
+        ~ & 0.086 & 0.086 & 0.086 & 0.086 & 0.103 & 0.103 & 0.103 & 0.104 \\ 
+        q\_siteshg\_haz & -0.197** & -0.195** & -0.192** & -0.188* & -0.128 & -0.121 & -0.128 & -0.113 \\ 
+        ~ & 0.097 & 0.097 & 0.098 & 0.098 & 0.116 & 0.115 & 0.116 & 0.116 \\ 
+        q\_sitesv\_hg\_haz & -0.145 & -0.152 & -0.153 & -0.174 & -0.195 & -0.19 & -0.207 & -0.207 \\ 
+        ~ & 0.121 & 0.121 & 0.121 & 0.124 & 0.16 & 0.16 & 0.16 & 0.163 \\ \hline
+        party & 0.075 & 0.065 & 0.052 & 0.069 & 0.002 & 0.034 & -0.114 & 0.002 \\ 
+        ~ & 0.077 & 0.093 & 0.391 & 0.077 & 0.1 & 0.119 & 0.553 & 0.101 \\ 
+        FEDERAL & 1.109*** & 1.106*** & 1.107*** & 1.125*** & 1.048*** & 1.03*** & 1.047*** & 1.061*** \\ 
+        ~ & 0.145 & 0.145 & 0.145 & 0.145 & 0.154 & 0.154 & 0.154 & 0.154 \\ 
+        REGION2 & 0.009 & 0.047 & -0.017 & 0.024 & 0.11 & 0.173 & 0.063 & 0.107 \\ 
+        ~ & 0.156 & 0.158 & 0.157 & 0.157 & 0.21 & 0.212 & 0.212 & 0.211 \\ 
+        REGION3 & 0.208 & 0.242 & 0.188 & 0.22 & 0.091 & 0.132 & 0.052 & 0.089 \\ 
+        ~ & 0.156 & 0.157 & 0.157 & 0.156 & 0.2 & 0.202 & 0.203 & 0.2 \\ 
+        REGION4 & 0.441** & 0.459** & 0.414** & 0.454** & 0.391* & 0.417* & 0.348 & 0.384* \\ 
+        ~ & 0.185 & 0.186 & 0.186 & 0.185 & 0.23 & 0.231 & 0.232 & 0.23 \\ 
+        REGION5 & 0.36** & 0.359** & 0.345** & 0.364** & 0.208 & 0.216 & 0.186 & 0.187 \\ 
+        ~ & 0.148 & 0.148 & 0.149 & 0.148 & 0.194 & 0.194 & 0.195 & 0.193 \\ 
+        REGION6 & 0.697*** & 0.709*** & 0.678*** & 0.711*** & 0.56** & 0.541** & 0.504** & 0.559** \\ 
+        ~ & 0.204 & 0.206 & 0.204 & 0.204 & 0.249 & 0.252 & 0.252 & 0.25 \\ 
+        REGION7 & 0.301 & 0.318 & 0.279 & 0.299 & 0.127 & 0.143 & 0.101 & 0.118 \\ 
+        ~ & 0.196 & 0.196 & 0.197 & 0.196 & 0.23 & 0.231 & 0.231 & 0.23 \\ 
+        REGION8 & 0.289 & 0.304 & 0.231 & 0.277 & 0.306 & 0.329 & 0.246 & 0.251 \\ 
+        ~ & 0.235 & 0.236 & 0.238 & 0.236 & 0.265 & 0.266 & 0.269 & 0.268 \\ 
+        REGION9 & -0.304 & -0.366 & -0.318 & -0.277 & -0.286 & -0.311 & -0.328 & -0.286 \\ 
+        ~ & 0.236 & 0.247 & 0.237 & 0.236 & 0.274 & 0.288 & 0.276 & 0.275 \\ 
+        REGION10 & 0.749*** & 0.777*** & 0.742*** & 0.769*** & 0.781*** & 0.839*** & 0.762*** & 0.776*** \\ 
+        ~ & 0.179 & 0.18 & 0.179 & 0.179 & 0.219 & 0.221 & 0.22 & 0.219 \\ \hline
+        permin:vote & ~ & -7.926* & ~ & ~ & ~ & -11.23** & ~ & ~ \\ 
+        ~ & ~ & 4.437 & ~ & ~ & ~ & 5.523 & ~ & ~ \\ 
+        permin:party & ~ & 0.063 & ~ & ~ & ~ & -0.435 & ~ & ~ \\ 
+        ~ & ~ & 0.437 & ~ & ~ & ~ & 0.554 & ~ & ~ \\ \hline
+        permin:CAG & ~ & ~ & -3.258 & ~ & ~ & ~ & -7.165 & ~ \\ 
+        ~ & ~ & ~ & 2.662 & ~ & ~ & ~ & 4.505 & ~ \\ 
+        perhsd:party & ~ & ~ & 0.365 & ~ & ~ & ~ & 0.424 & ~ \\ 
+        ~ & ~ & ~ & 0.831 & ~ & ~ & ~ & 1.085 & ~ \\ 
+        percld:party & ~ & ~ & -1.41 & ~ & ~ & ~ & -0.717 & ~ \\ 
+        ~ & ~ & ~ & 1.048 & ~ & ~ & ~ & 1.225 & ~ \\ 
+        perhsd:CAG & ~ & ~ & -0.31 & ~ & ~ & ~ & -0.533 & ~ \\ 
+        ~ & ~ & ~ & 3.824 & ~ & ~ & ~ & 4.542 & ~ \\ 
+        percld:CAG & ~ & ~ & -0.646 & ~ & ~ & ~ & -4.791 & ~ \\ 
+        ~ & ~ & ~ & 3.141 & ~ & ~ & ~ & 4.103 & ~ \\ \hline
+        CAG:q\_siteslow\_haz & ~ & ~ & ~ & -0.809 & ~ & ~ & ~ & -1.517** \\ 
+        ~ & ~ & ~ & ~ & 0.721 & ~ & ~ & ~ & 0.763 \\ 
+        CAG:q\_siteshg\_haz & ~ & ~ & ~ & -0.694 & ~ & ~ & ~ & -1.437* \\ 
+        ~ & ~ & ~ & ~ & 0.831 & ~ & ~ & ~ & 0.847 \\ 
+        CAG:q\_sitesv\_hg\_haz & ~ & ~ & ~ & 0.411 & ~ & ~ & ~ & -0.504 \\ 
+        ~ & ~ & ~ & ~ & 0.724 & ~ & ~ & ~ & 0.848 \\ \hline
+        Observations & 1385 & 1385 & 1385 & 1385 & 1049 & 1049 & 1049 & 1049 \\ 
+        Events & 946 & 946 & 946 & 946 & 660 & 660 & 660 & 660 \\ 
+        Log Likelihood & -5970.581 & -5969.118 & -5982.633 & -5968.117 & -3967.017 & -3965.394 & -3964.706 & -3965.171 \\ 
+        AIC & 12009.25 & 12010.03 & 12014.93 & 12010.44 & 8005.94 & 8005.36 & 8010.747 & 8007.629 \\ 
+        Variance of Random Effects & 0.06163297 & 0.06031961 & 0.06319806 & 0.06307807 & 0.1255816 & 0.110424 & 0.1200322 & 0.1191928 \\ 
 			\hline
 			\addlinespace[1ex]
-			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
-				\textsuperscript{**}$p\leq0.01$, 
-				\textsuperscript{*}$p\leq0.05$}
+			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.01$, 
+				\textsuperscript{**}$p\leq0.05$, 
+				\textsuperscript{*}$p\leq0.10$}
 	\end{tabular}}
 \end{table}
 
 
-Finally, Table \ref{coxH} verifies whether the results of the survival analysis thus far are robust to distance specification. Models 3h through 5h investigate a half-mile radius around Superfund sites instead of the one-mile radius used previously. 
+Finally, columns five through eight in Table \ref{coxE} return to the initial assignment of census data to sites but shrink the buffers around sites to only one-half mile. It should be noted that this modification results in the loss of about 350 observations due to the small buffer sizes. The three major impacts of this change are that the average sites that are Federally owned decreases slightly, the average population increases (because the lost sites are those most likely not within census tracts in earlier Census' and because the percentages of sites from Regions six through ten also get smaller, especially for Region nine), and the median income increases as well. 
 
-
-\begin{table}[H]
-	\centering	
-	\caption{Specification check of Cox regression estimates of cleanup time within a half-mile distance of a Superfund site, same model specifications as Table \ref{cox2}.} \label{coxH}
-	\tabcolsep 9pt
-	\scalebox{0.83}{
-		\begin{tabular}{lccc|ccc|ccc}
-			\hline 
-			& \multicolumn{3}{c}{Model 3h} & \multicolumn{3}{c}{Model 4h} & \multicolumn{3}{c}{Model 5h} \\
-			&\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   &\multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.}   & \multicolumn{1}{c}{Estimate}  & \multicolumn{1}{c}{H.R.}   & \multicolumn{1}{c}{S.E.} \\\hline
-			Minority & -0.17 & 0.85  & 0.07  & -0.86 & 0.42  & 0.76  & -0.15 & 0.86  & 0.07 \\
-			Population over 65  & 0.25** & 1.30  & 0.10  & 0.24** & 1.27  & 0.10  & 0.20** & 1.22  & 0.09 \\
-			Unemployed & 0.99  & 2.68  & 0.82  & 0.91  & 2.49  & 0.82  & 0.97  & 2.64  & 0.82 \\
-			Educated & 0.25  & 1.28  & 0.10  & 0.25  & 1.29  & 0.10  & 0.22  & 1.24  & 0.12 \\
-			Urban & -0.08** & 0.92  & 0.04  & -0.08** & 0.92  & 0.04  & -0.08*** & 0.92  & 0.04 \\
-			Logincome & -0.30*** & 0.74  & 0.08  & -0.31** & 0.74  & 0.08  & -0.30*** & 0.74  & 0.08 \\
-			Home Ownership & 0.19* & 1.22  & 0.10  & 0.18** & 1.20  & 0.10  & 0.21** & 1.23  & 0.08 \\
-			Voter Turnout  & 0.02** & 1.00  & 0.01  & -0.01** & 1.00  & 0.01  & 0.01** & 1.00  & 0.01 \\
-			Dem. Rep. & 0.16  & 1.17  & 0.08  & 0.15  & 1.17  & 0.09  & 0.11  & 1.12  & 0.12 \\
-			CAG   & -0.73*** & 0.48  & 0.26  & -0.73** & 0.48  & 0.26  & -0.75*** & 0.47  & 0.34 \\
-			Minority$\times$  &       &       &       & \multirow{2}{*}{0.01}  & \multirow{2}{*}{1.01}  & \multirow{2}{*}{0.01}  &       &       &  \\
-			 \hspace{10pt}Voter Turnout & & & & & & & & & \\
-			Minority$\times$ &       &       &       & \multirow{2}{*}{0.02}  & \multirow{2}{*}{1.02}  & \multirow{2}{*}{0.13}  &       &       &  \\
-			 \hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Minority$\times$CAG &       &       &       &       &       &       &  {0.11} &  {1.11}  & {0.41} \\
-			Educated$\times$ &       &       &       &       &       &       & \multirow{2}{*}{0.05} & \multirow{2}{*}{1.05}  & \multirow{2}{*}{0.10} \\
-			\hspace{10pt}Dem. Rep. & & & & & & & & & \\
-			Educated$\times$CAG &       &       &       &       &       &       &-0.02 & 0.98  & 0.20 \\
-			LogNPV & -0.05*** & 0.94  & 0.01  & -0.06*** & 0.94  & 0.01  & -0.05*** & 0.94  & 0.01 \\
-			Pollution (HRS)& -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00  & -0.01*** & 0.99  & 0.00 \\
-			Federal & -1.03*** & 0.35  & 0.13  & -1.04*** & 0.35  & 0.13  & -1.04*** & 0.35  & 0.13 \\
-			Region1 & -0.52** & 0.59  & 0.22  & -0.50** & 0.59  & 0.22  & -0.52* & 0.59  & 0.22 \\
-			Region2 & -0.62*** & 0.54  & 0.18  & -0.63** & 0.53  & 0.18  & -0.62** & 0.54  & 0.18 \\
-			Region3 & -0.42 & 0.66  & 0.20  & -0.42 & 0.65  & 0.20  & -0.41 & 0.66  & 0.20 \\
-			Region4 & 0.09  & 1.10  & 0.19  & 0.09  & 1.10  & 0.20  & 0.09  & 1.09  & 0.20 \\
-			Region5 & -0.26 & 0.77  & 0.21  & -0.25 & 0.78  & 0.20  & -0.26 & 0.77  & 0.21 \\
-			Region6 & 0.29  & 1.34  & 0.20  & 0.28  & 1.33  & 0.20  & 0.28  & 1.33  & 0.20 \\
-			Region7 & -0.08 & 0.93  & 0.25  & -0.07 & 0.93  & 0.25  & -0.07 & 0.93  & 0.25 \\
-			Region8 & -0.35 & 0.70  & 0.28  & -0.36 & 0.70  & 0.28  & -0.35 & 0.70  & 0.28 \\
-			Region9 & -0.99*** & 0.37  & 0.23  & -1.01*** & 0.36  & 0.23  & -0.98*** & 0.37  & 0.23 \\						
-			\hline 
-		Likelihood Ratio & 261.5***  & & &
-			262.4*** &  & &
-			261.8*** & &\\ 
-			Wald Test & 246.4*** & & &
-			247.1*** & & &
-			246.8*** & &\\
-			Score (LogRank) & 253.8*** & & &
-			254.5*** &  & &
-			254.4*** & &\\
-			\hline
-			\addlinespace[1ex]
-			\multicolumn{3}{l}{\textsuperscript{***}$p\leq0.001$, 
-				\textsuperscript{**}$p\leq0.01$, 
-				\textsuperscript{*}$p\leq0.05$}
-	\end{tabular}}
-\end{table}
-
-All three models demonstrate overall robustness of results, other than a few notable variables. Education, which was significant in the one-mile specification of Models 3 through 5, is now insignificant, while urban population and home ownership now are, with home ownership again shortening time to cleanup and urban lengthening it. This perhaps indicates some residential sorting with respect to education as the radius around the Superfund site shrinks. Additionally, for the half-mile radius, voter turnout is more important than party: though the coefficients are small in magnitude and flip signs in Model 4h, the effect of voter turnout is significant, while that of party preference is not. This may indicate that cleanup is no longer a partisan issue for those closest to a site.
+AGain, the coefficient estimates are approximately the same as before with only minor changes in their magnitude. Only the fixed effects from Region Four looses significance in these new estimates and, of primary interest, the coefficient in column (6) on the percentage of minorities within the buffer increases in magnitude and becomes slightly significant. Likewise, the negative impact of the interaction of the percentage of minority variable and the voter participation variable also increases (the estimate increases in absolute value) further supporting the idea that there is some joint relationship between the presence of minorities and overall community involvement as proxied by voter participation. Finally, the interaction between the existence of a CAG and the pollution hazard quintile is also significant for the low and high hazard quintiles indicating that the presence of a CAG for these types of sites may cause a slowing of the process. These findings further bolster the need for splitting the cleanup variable between its two components and having better data to engage in a more detailed causal study. 
 
 \section{Conclusion}\label{conc}
 
-Over the past century, more than one thousand hazardous sites in the US originated from commercial and industrial waste spilled by industrial sites \parencite{EPA2011}. These sites pose substantial health risks to nearby communities; contaminated sites impact health in both the short and long term, sometimes even through decreased learning outcomes in school-aged children \parencite{Pastor2004} or through birth defects in future generations. The Love Canal disaster led Congress to establish the Superfund program in 1980. Since then, the EPA has targeted and removed numerous hazardous sites. However, the pace of cleanup varies among sites, while the average time between listing sites and removing them has grown since instantiation. In this paper, we investigated the underlying factors of cleanup time differences, particularly the demographics and involvement of a site's surrounding community. 
+Over the past century, more than one thousand hazardous sites in the US originated from commercial and industrial waste spilled by industrial sites \parencite{EPA2011}. These sites pose substantial health risks to nearby communities; contaminated sites impact health in both the short and long term, sometimes even through decreased learning outcomes in school-aged children \parencite{Pastor2004} or through birth defects in future generations. The Love Canal disaster led Congress to establish the Superfund program in 1980. Since then, the EPA has targeted and removed numerous hazardous sites; however, the pace of cleanup varies among sites. In this paper, we investigate what factors within the community and about the sites might be related to these varying cleanup times. 
 
-Our findings suggest that cleanup time does not depend on the racial composition of communities living in vicinity of Superfund sites, though again, this says nothing about the location of polluted sites themselves. However, we do find evidence that median household income correlates with a longer remediation process. This suggests that sites in wealthy neighborhoods are more difficult, in some regard: perhaps the litigation process is more complex, or perhaps those communities favor more comprehensive, costly remedies. Faster cleanup is associated with less costly, ``easy'' sites, evidenced by our results for site-specific characteristics like cleanup cost, pollution level, and regional differences. Additionally, since the EPA prioritizes funding ongoing projects, the organization may delay starting cleanup for sites with a high estimated cost or a high level of pollution \parencite{GAO2015}, and the complexity of cleanup at these sites naturally drags out the process as well. 
-It would be elucidating to further investigate this result to pinpoint the root cause: whether the longer cleanup of Superfund sites in wealthier communities is because the EPA overly invests in a comprehensive strategy or shelves the project for litigation/administrative reasons. Unfortunately, our data provides the length of time between listing, completion, and removal, but not the intermediate point of litigation completion and construction start -- especially because these two points may overlap.
+While we are unable to point to causal relationships and are unfortunately unable to divide the observed cleanup time between the enforcement and cleanup components, our finds point to four main areas that deserve further investigation. First and foremost, there does appear to be a racial component as sites that are surrounded by populations that have a higher percentage of minorities see slower cleanup time based on an estimated mixed effects hazard model assuming frailty across sites grouped by the listing year. 
 
-On the other hand, we do find that community participation on a whole, proxied by voter turnout, the presence of a Community Advisory Group (CAG), and even education on some level, greatly affects the efficiency and time of cleanup. We observe that education and voter turnout both contribute to a shorter cleanup, but the mechanism is unclear. Some plausible mechanisms are that an educated, engaged populace prefers quick removal or that it assists the EPA in its efforts in the community. Our robustness check with centered census-dates indicates endogeneity issues with the CAG indicator; it appears as if the presence of a CAG is positively correlated with cleanup duration, but improved, as-of-yet-unaccessible data and a more exact time-series approach are needed to disentangle cause and effect.
+Our results also point to the EPA region within which the site is located as a factor in the cleanup time with four of the ten regions showing statistically faster cleanup times. Unfortunately we do not know if this is a process element that is shortening the enforcement period or if it is something else about those regions, but the institutions governing cleanup clearly matter. Additionally, the extent of community involvement may also delay cleanup. Using the proxies of education and voter participation there is weak evidence of a slowing effect with higher participation and this effect is further supported when we investigate the impact of the existence of Community Advisory Groups (CAGs).
 
-Our main limitation is the need to use only data at time of listing. This is necessitated by the survival analysis approach of the Cox model and our concerns for endogeneity that could arise from community mobility if using data from during the cleanup process. This is also why we use the listing's calculated Net Present Value as cost estimate created prior to the actual cleanup, and why CAG existence -- which is not determined prior to the cleanup but during -- is such a problematic variable. 
+Finally, the extent of the pollution at the site, measured by both a continuous measure of site hazard score and by dividing the sites into hazard quintiles, shows that outside of the sites in the lowest hazard quintile, the more pollution at the site, the longer the cleanup duration. While this is of no surprise, what is of interest is that when the level of site pollution is interacted with the existence of CAGs, the results indicate that there is a slowdown in cleanup for sites in the middle two hazard quintiles; however, there may be a speeding up of the process for the sites with the highest hazards according to the site score. 
 
-Our results do, however, have some value, particularly regarding the correlation of \textit{ex ante} community characteristics and overall site cleanup length. They also provide some limited policy implications about boosting public awareness of the true impact of communities on the EPA's Superfund decisions. In this study, we found that many more complex factors may impact the whole Superfund process than demographics alone. Furthermore, the racial bias observed in the 80's may have come from or been exacerbated by the extent to which communities were or were not involved in the process; this involvement depends on community factors such as income, voter turnout, or education, all of which may be correlated with race in various US regions. Therefore, local campaigns and groups, especially environmental justice networks focusing on hazard education and voter turnout, would play an extremely important role in facilitating well-informed communities that can influence the EPA's policies regarding hazardous waste lands. Future administrative action and legislation, like the resolution to create a ``Green New Deal'' \parencite{Ocasio-Cortez2019}, can aid communities by working within the established Superfund bureaucratic structure by providing further community education to reduce enforcement delays and improve the cost efficiency of chosen cleanup methods. 
+There are two main limitations to this study. First and foremost, we can not make causal connections because we are unable to fully control for the endogeneity caused by chaining demographics around sites during the cleanup process. While this would be less of an issue for short cleanup periods, the average cleanup time is 14 years allowing plenty of time for the neighborhood surrounding the site to change. Our second key limitation is the availability of data from the EPA. First we are unable to split the cleanup time between the two important components, especially when community involvement is being investigated, and secondly, we have very few detailed observations of community involvement in the EPA Superfund process as only about three percent of our sample had CAGs assigned to them. As more CAGs are utilized and more information about the way regions implement cleanup process should help shed additional light on the factors that may help to provide increased environmental justice for communities located close to such sites. 
 
 %%%%%%%%%%
 %%%%%%%%%%

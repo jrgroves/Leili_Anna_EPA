@@ -84,14 +84,38 @@ fig.one <- ggplot(fig.data, aes(x = year.end, y = n))+
            geom_line()+
            ylab("Number of Cleanups")+
            xlab("Year")+
-           ggtitle("Figure One: Superfund Cleanups Completed by Year") +
+           ggtitle("") +
            labs(caption = "Source: EPA")+ 
            scale_x_continuous(breaks = seq(1980,2010,2))+
            theme_bw()
 
-fig.two <- ggplot(core2, aes(x=q_sites, y=duration))+
+fig.two.data <- core2 %>%
+  mutate(comp = (duration/365),
+         event2 = case_when(event == 0 ~ "Not Complete",
+                            event == 1 ~ "Completed",
+                            TRUE ~ "Other")) %>%
+  select(Start_YR, comp, event, event2)
+
+
+fig.two<- ggplot(fig.two.data, aes(x = comp, fill = event2)) + 
+          geom_histogram(color="#e9ecef", alpha=0.6, position = position_dodge(), binwidth = 2) +
+          scale_fill_manual(values=c("#000000", "#888888")) +
+          ylab("Number of Sites") +
+          xlab("Duration in Years") +
+          scale_x_continuous(breaks = seq(0,38,2)) +
+          theme_bw()+
+          labs(fill = "")
+ 
+
+
+
+fig.three <- ggplot(core2, aes(x=q_sites, y=duration))+
   geom_boxplot()+
-  theme_bw()
+  theme_bw()+
+  ylab("Cleanup Duration (days)") +
+  xlab("Site Hazard Score Quintiles") +
+  theme_bw()+
+  labs(fill = "")
 
 ### Table One ####
 
